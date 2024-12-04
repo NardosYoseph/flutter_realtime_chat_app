@@ -39,6 +39,8 @@ dependencies:
   web_socket_channel: ^3.0.1
   cloud_firestore: ^5.5.0
   firebase_auth: ^5.3.3
+  equatable: ^2.0.7
+  firebase_core: ^3.8.0
 
 dev_dependencies:
   flutter_test:
