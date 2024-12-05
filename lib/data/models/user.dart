@@ -3,24 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
   String id;
-  String name;
+  String username;
   String email;
   String profilePicture;
   User({
     required this.id,
-    required this.name,
+    required this.username,
     required this.email,
     required this.profilePicture,
   });
 
 factory User.fromFirestore(DocumentSnapshot doc){
   final data=doc.data() as Map<String, dynamic>;
-  return User(id: doc.id, name: data["name"]??'', email: data["email"]??'', profilePicture: data["profilePicture"]??'');
+  return User(id: doc.id, username: data["username"]??'', email: data["email"]??'', profilePicture: data["profilePicture"]??'');
 }
 
 ToFirestore(){
   return {
-    "name":this.name,
+    "name":this.username,
     "email":this.email,
     "profilePicture":this.profilePicture
 

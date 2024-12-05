@@ -24,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthenticatedState(user.id, user.email));
   }catch(e){
       print(e);
-   emit(AuthenticationErrorState("error $e"));
+   emit(AuthenticationErrorState("error signing in"));
   }
     }
 

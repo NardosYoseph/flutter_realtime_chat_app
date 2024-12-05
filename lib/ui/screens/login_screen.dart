@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
+import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/signup_screen.dart';
 
 import '../widgets/emailTextfield.dart';
@@ -66,7 +67,7 @@ class LoginScreen extends StatelessWidget {
                      if(state is AuthenticatedState){
                       Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(builder: (context) => HomePage()),
                     );
                      }
                         else if (state is AuthenticationErrorState) {

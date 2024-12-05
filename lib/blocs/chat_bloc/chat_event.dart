@@ -1,6 +1,24 @@
 part of 'chat_bloc.dart';
 
 abstract class ChatEvent extends Equatable{}
+class FetchChatRoomsEvent extends ChatEvent {
+  final String userId;
+
+  FetchChatRoomsEvent(this.userId);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [userId];
+}
+class SelectChatRoomEvent extends ChatEvent {
+  final String chatRoomId;
+
+  SelectChatRoomEvent(this.chatRoomId);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [chatRoomId];
+}
 class ChatStartedEvent extends ChatEvent{
   final String chatRoomId;
 

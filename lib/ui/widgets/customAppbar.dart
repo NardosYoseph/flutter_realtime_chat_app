@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_time_chat_app/ui/screens/userSearchScreen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -10,6 +11,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: const Text("MyChat",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
       backgroundColor: const Color.fromARGB(255, 170, 18, 107),
       elevation: 20,
+      actions: [Row(children: [IconButton(icon:Icon(Icons.search),
+      onPressed: (){ Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchUserScreen()),
+                    );
+      },),SizedBox(width: 10,)],)],
     );
   }
 

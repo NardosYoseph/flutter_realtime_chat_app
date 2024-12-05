@@ -5,7 +5,7 @@ class AuthProvider {
   FirebaseAuth _firebaseAuth;
   AuthProvider({FirebaseAuth? firebase_auth})
   :_firebaseAuth=firebase_auth??FirebaseAuth.instance;
-Future<void> SignUp(String email, String password, String name) async {
+Future<void> SignUp(String email, String password, String username) async {
   print("In provider class");
 
   try {
@@ -17,7 +17,7 @@ Future<void> SignUp(String email, String password, String name) async {
     print("In provider class, try success");
 
     // Update the display name of the user
-    await userCredential.user?.updateDisplayName(name);
+    await userCredential.user?.updateDisplayName(username);
     print("In provider, update displayName success");
 
     // Get the user UID
@@ -29,7 +29,7 @@ Future<void> SignUp(String email, String password, String name) async {
 
     // Save user profile to Firestore
     await FirebaseFirestore.instance.collection('users').doc(uid).set({
-      'username': name,
+      'username': username,
       'email': email,
       'createdAt': FieldValue.serverTimestamp(),
     });

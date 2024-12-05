@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
+import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/repositories/auth_repository.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
+import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 
 Future<void> main() async {
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     AuthRepository authRepository = AuthRepository();
     ChatRepository chatRepository = ChatRepository();
+    UserRepository userRepository= UserRepository();
 
     return MultiBlocProvider(
       providers: [
@@ -27,6 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ChatBloc(chatRepository),
+        ) ,
+        BlocProvider(
+          create: (context) => UserBloc(userRepository),
         ),
       ],
       child: MaterialApp(
