@@ -17,4 +17,18 @@ class UserProvider {
   }
 
  }
+ Future<User> fetchUser(String userId) async {
+ try {
+    final docSnapshot = await _firebaseFirestore.collection('users').doc(userId).get();
+
+    if (docSnapshot.exists) {
+      return User.fromFirestore(docSnapshot);
+    } else {
+      throw Exception('User not found');
+    }
+  } catch (e) {
+    throw Exception('Error fetching user: $e');
+  }
+}
+
 }

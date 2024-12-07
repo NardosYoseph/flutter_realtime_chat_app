@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
+import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 
 import '../widgets/emailTextfield.dart';
 import '../widgets/passwordTextField.dart';
@@ -79,7 +80,7 @@ class SignupScreen extends StatelessWidget {
                      if(state is RegistrationSuccessState){
                       Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                      }
                          else if (state is RegistrationErrorState) {

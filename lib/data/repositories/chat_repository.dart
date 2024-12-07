@@ -6,10 +6,10 @@ class ChatRepository {
   ChatProvider _chatProvider;
   ChatRepository({ChatProvider? chatProvider}):_chatProvider=chatProvider?? ChatProvider();
 
-  Stream<List<Message>> fetchMessages(String chatRoomId) async*{
+  Future<List<Message>> fetchMessages(String chatRoomId) async{
     try{
       final response=await _chatProvider.fetchMessages(chatRoomId);
-      yield response;
+      return response;
     }
     catch(e){
       print("$e");
@@ -36,6 +36,15 @@ class ChatRepository {
     } catch (e) {
       print("Fetch chat rooms provider error $e");
       throw Exception("Failed to fetch chat rooms: $e");
+    }
+  }
+  Future<void> updateChatRoom(String chatRoomId, String lastMessage, String lastMessageSender, DateTime lastMessageTimestamp) async{
+    try{
+    print("inside send repo");
+
+     final response=await _chatProvider.updateChatRoom(chatRoomId, lastMessage, lastMessageSender, lastMessageTimestamp);
+    }catch(e){
+      print("$e");
     }
   }
 }

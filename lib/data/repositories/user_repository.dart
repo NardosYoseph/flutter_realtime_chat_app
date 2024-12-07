@@ -24,6 +24,17 @@ class UserRepository {
       throw Exception("Failed to fetch users: $e");
     }
   }
+ Future<User> fetchUser(String userId) async {
+    try {
+      print("inside repo try ");
+      final response = await _userProvider.fetchUser(userId);
+      print("inside repo try success $response");
+      return response;
+    } catch (e) {
+      print("$e");
+      throw Exception("Failed to fetch users: $e");
+    }
+  }
 
   Future<ChatRoom> createOrGetChatRoom(String currentUserId, String otherUserId) async {
     // Generate a consistent chatRoomId using both user IDs
@@ -36,7 +47,7 @@ class UserRepository {
       ChatRoom? existingChatRoom = await _chatProvider.getChatRoomById(chatRoomId);
 
       if (existingChatRoom != null) {
-        // If the chat room exists, return it
+       print("already exst chatroom");
         return existingChatRoom;
       }
 
@@ -49,6 +60,7 @@ class UserRepository {
       );
 
       await _chatProvider.createChatRoom(newChatRoom);
+       print("creaed chatroom");
 
       return newChatRoom;
     } catch (e) {

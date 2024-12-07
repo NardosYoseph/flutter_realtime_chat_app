@@ -29,14 +29,13 @@ class ChatStartedEvent extends ChatEvent{
   
 }
 class SendMessageEvent extends ChatEvent {
-  final String chatRoomId;
   final String senderId;
   final String message;
 
-  SendMessageEvent(this.chatRoomId, this.senderId, this.message);
+  SendMessageEvent(this.senderId, this.message);
 
   @override
-  List<Object?> get props => [chatRoomId, senderId, message];
+  List<Object?> get props => [senderId, message];
 }
 
 class LoadMessagesEvent extends ChatEvent{

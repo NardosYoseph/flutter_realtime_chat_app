@@ -1,16 +1,19 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
 import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 
 import '../../data/models/user.dart';
+import '../chat_bloc/chat_bloc.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository _userRepository;
-  UserBloc(this._userRepository) : super(UserInitial()) {
+  final ChatRepository _chatrRepository;
+  UserBloc(this._userRepository,this._chatrRepository) : super(UserInitial()) {
     on<UserSearchEvent>(_onUserSearch);
     on<SelectUserEvent>(_onUserSelect);
   }
@@ -39,8 +42,8 @@ emit(UsersError("error fetching user"));
 
     // Check if chat room exists or create it in the repository
     await _userRepository.createOrGetChatRoom(currentUserId, selectedUserId);
-
-    // Emit a new state with the chatRoomId (optional, for navigation purposes)
+    // final messages=await _chatrRepository.fetchMessages(chatRoomId);
+    // ChatBloc.add(SelectChatRoomEvent(chatRoomId));
     emit(ChatRoomCreated(chatRoomId));
   } catch (e) {
     emit(UsersError("Error creating chat room"));

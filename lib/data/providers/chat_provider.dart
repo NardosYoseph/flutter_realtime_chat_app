@@ -10,7 +10,7 @@ class ChatProvider {
     print("Inside fetch messages provider");
     try {
       final snapshot = await _firestore
-          .collection('chat_rooms')
+          .collection('chatRooms')
           .doc(chatRoomId)
           .collection('messages')
           .orderBy('timestamp')
@@ -37,7 +37,7 @@ class ChatProvider {
       );
 
       await _firestore
-          .collection('chat_rooms')
+          .collection('chatRooms')
           .doc(chatRoomId)
           .collection('messages')
           .add(message.toMap());
@@ -54,8 +54,8 @@ class ChatProvider {
     print("Inside fetch chat rooms provider");
     try {
       final snapshot = await _firestore
-          .collection('chat_rooms')
-          // .where('participants', arrayContains: userId)
+          .collection('chatRooms')
+          .where('participants', arrayContains: userId)
           .get();
 
       print("Fetch chat rooms provider success $snapshot");
@@ -86,4 +86,15 @@ class ChatProvider {
       'lastMessage': chatRoom.lastMessage, 
     });
   }
+  Future<void> updateChatRoom(String chatRoomId,String lastMessage,String lastMessageSender,DateTime lastMessageTimestamp,
+) async {
+  final chatRoomRef = await _firestore.collection('chatRooms').doc(chatRoomId);
+
+  await chatRoomRef.update({
+    'lastMessage': lastMessage,
+    'lastMessageSender': lastMessageSender,
+    'lastMessageTimestamp': lastMessageTimestamp,
+  });
+}
+
 }

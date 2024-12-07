@@ -29,10 +29,10 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthBloc(authRepository),
         ),
         BlocProvider(
-          create: (context) => ChatBloc(chatRepository),
+          create: (context) => ChatBloc(chatRepository,userRepository),
         ) ,
         BlocProvider(
-          create: (context) => UserBloc(userRepository),
+          create: (context) => UserBloc(userRepository,chatRepository),
         ),
       ],
       child: MaterialApp(

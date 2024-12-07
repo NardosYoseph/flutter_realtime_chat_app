@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
+import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
 
@@ -51,11 +52,16 @@ class SearchUserScreen extends StatelessWidget {
                         // Return the widget here
                         return GestureDetector(
                           onTap: (){
+                           print("User clicked: ${user.username}");
                             final authState = context.read<AuthBloc>().state;
     if (authState is AuthenticatedState) {
       String currentUserId = authState.userId;
+      print("Authenticated User: $currentUserId");
                          context.read<UserBloc>().add(SelectUserEvent(currentUserId, user.id));
-                         
+                            Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                    );
                              }   },
                           child: Container(
                             child: Column(

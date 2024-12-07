@@ -14,12 +14,14 @@ class ChatLoading extends ChatState{
   // TODO: implement props
   List<Object?> get props => [];
 }
+
 class ChatLoaded extends ChatState{
   List<Message> messages;
-  ChatLoaded(this.messages);
+  String chatRoomId;
+  ChatLoaded(this.messages,this.chatRoomId);
   @override
   // TODO: implement props
-  List<Object?> get props => [messages];
+  List<Object?> get props => [messages,chatRoomId];
 }
 
 class ChatError extends ChatState{

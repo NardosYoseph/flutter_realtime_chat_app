@@ -24,11 +24,13 @@ String chatRoomId='';
   @override
   void initState() {
     super.initState();
-final chatState=context.read<UserBloc>().state;
-if(chatState is ChatRoomCreated){
-  chatRoomId=chatState.chatRoomId;
-  context.read<ChatBloc>().add(SelectChatRoomEvent(chatRoomId));
-}
+// final userChatState=context.read<UserBloc>().state;
+// final chatRoomState=context.read<ChatBloc>().state;
+// if(chatRoomState is ChatLoaded){
+//   final roomState=chatRoomState as ChatLoaded;
+//   chatRoomId=roomState.chatRoomId;
+//   context.read<ChatBloc>().add(FetchChatRoomsEvent(chatRoomId));
+// }
   }
 
 
@@ -111,7 +113,6 @@ if(chatState is ChatRoomCreated){
       
                             context.read<ChatBloc>().add(
                                   SendMessageEvent(
-                                    chatRoomId,
                                     senderId,
                                     message
                                   ),
@@ -125,7 +126,11 @@ if(chatState is ChatRoomCreated){
                 ),
               ],
             );
-          } else {
+          } 
+          else if(state is ChatInitial){
+            return Center(child: Text('Initializing...'));
+          }
+          else {
             return Center(child: Text('No messages found.'));
           }
         },

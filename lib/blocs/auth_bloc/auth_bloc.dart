@@ -34,6 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user=await _authRepository.register(event.email, event.password, event.username);
       print("in auth bloc");
       emit(RegistrationSuccessState());
+      // emit(AuthenticatedState(user., email))
     }catch(e){
       print(e);
       emit(RegistrationErrorState(errorMessage: "error registering"));
