@@ -20,6 +20,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   on<SelectChatRoomEvent>(_onSelectChatRoom);
   on<SendMessageEvent>(_onSendMessage);
   on<FetchChatRoomsEvent>(_onFetchChatRoom);
+  on<SelectChatRoomFromSearchEvent>(_onSelectChatRoomFromSearch);
   }
 
 Future<void>  _onSelectChatRoom(SelectChatRoomEvent event,Emitter<ChatState> emit) async{
@@ -39,10 +40,16 @@ final messages =await _chatRepository
  Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
     try {
     print("inside send message bloc");
+String chatRoomId;
+// if (state is ChatLoaded) {
+      chatRoomId = (state as ChatLoaded).chatRoomId;
+    // } else {
+    //   // Generate the chatRoomId dynamically
+    //   chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
+    //       ? "${event.senderId}_${event.recipientId}"
+    //       : "${event.recipientId}_${event.senderId}";
 
-      if (state is ChatLoaded) {
-      final chatRoomId = (state as ChatLoaded).chatRoomId; // Retrieve chatRoomId from state
-      print('chatroomid $chatRoomId');
+    // }
       await _chatRepository.sendMessage(
         chatRoomId,
         event.senderId,
@@ -56,14 +63,31 @@ final messages =await _chatRepository
       final updatedMessages = List<Message>.from((state as ChatLoaded).messages)
         ..add(Message(senderId: event.senderId, content: event.message));
       emit(ChatLoaded(updatedMessages,chatRoomId));
-    } else {
-      throw Exception("Chat room not selected");
-    }
+
   } catch (e) {
     emit(ChatError("Failed to send message: ${e.toString()}"));
   }
   }
+Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event,Emitter<ChatState> emit)async{
+  try{
+String chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
+          ? "${event.senderId}_${event.recipientId}"
+          : "${event.recipientId}_${event.senderId}";
 
+      // Check or create chat room if it doesn't exist
+      final chatRoom = await _chatRepository.getChatRoom(event.senderId, event.recipientId);
+      if (chatRoom == null) {
+        await _chatRepository.createChatRoom(event.senderId, event.recipientId);
+      }
+       print("inside fetch bloc to start message");
+
+final messages =await _chatRepository
+          .fetchMessages(chatRoomId);
+        emit(ChatLoaded(messages,chatRoomId));
+  }catch(e){
+
+  }
+}
 Future<void> _onFetchChatRoom(FetchChatRoomsEvent event, Emitter<ChatState> emit) async{
   emit(ChatRoomLoading());
   try{

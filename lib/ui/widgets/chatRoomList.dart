@@ -20,7 +20,10 @@ class ChatRoomsSection extends StatelessWidget {
           if (state is ChatRoomLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ChatRoomsLoaded) {
-            return _buildChatRoomsList(state.chatRooms);
+            // Sort chat rooms by lastMessageTimestamp in descending order
+            final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
+              ..sort((a, b) => b.lastMessageTimestamp!.compareTo(a.lastMessageTimestamp!));
+            return _buildChatRoomsList(sortedChatRooms);
           } else {
             return const Center(child: Text("Unable to load chat rooms."));
           }

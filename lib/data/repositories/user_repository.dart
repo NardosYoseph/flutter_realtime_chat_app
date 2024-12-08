@@ -36,36 +36,5 @@ class UserRepository {
     }
   }
 
-  Future<ChatRoom> createOrGetChatRoom(String currentUserId, String otherUserId) async {
-    // Generate a consistent chatRoomId using both user IDs
-    final chatRoomId = (currentUserId.compareTo(otherUserId) < 0)
-        ? "$currentUserId\_$otherUserId"
-        : "$otherUserId\_$currentUserId";
-
-    try {
-      // Check if the chat room already exists
-      ChatRoom? existingChatRoom = await _chatProvider.getChatRoomById(chatRoomId);
-
-      if (existingChatRoom != null) {
-       print("already exst chatroom");
-        return existingChatRoom;
-      }
-
-      // If the chat room doesn't exist, create it
-      final newChatRoom = ChatRoom(
-        id: chatRoomId,
-        participants: [currentUserId, otherUserId],
-        createdAt: DateTime.now(),
-        lastMessage: null,
-      );
-
-      await _chatProvider.createChatRoom(newChatRoom);
-       print("creaed chatroom");
-
-      return newChatRoom;
-    } catch (e) {
-      print("Error in createOrGenerateChatRoom: $e");
-      throw Exception("Failed to create or retrieve chat room: $e");
-    }
-  }
+  
 }

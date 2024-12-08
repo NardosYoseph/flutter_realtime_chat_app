@@ -46,7 +46,7 @@ class CustomDrawer extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => HomePage()),
                     );
             },
-            child: ListTile(leading: Icon(Icons.settings,),title: Text("settings"),))
+            child: ListTile(leading: Icon(Icons.home,),title: Text("Home"),))
         ],
       ),
     );

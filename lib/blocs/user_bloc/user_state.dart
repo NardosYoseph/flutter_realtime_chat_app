@@ -26,10 +26,22 @@ String message;
   // TODO: implement props
   List<Object?> get props => [message];
 }
-class ChatRoomCreated extends UserState {
+class SelectedUserLoading extends UserState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+class SelectedUserLoaded extends UserState{
+  User user;
+  SelectedUserLoaded(this.user);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [user];
+}
+class ChatRoomSelected extends UserState {
   String chatRoomId;
 
-  ChatRoomCreated(this.chatRoomId);
+  ChatRoomSelected(this.chatRoomId);
   
   @override
   // TODO: implement props

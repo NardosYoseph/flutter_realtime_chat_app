@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
@@ -30,12 +31,23 @@ final List<Map<String, String>> demoUsers = [
     {'name': 'Eve', 'avatarUrl': 'https://via.placeholder.com/150'},
   ];
 
-
-
  @override
   void initState() {
     super.initState();
-_fetchChatRooms();
+    BackButtonInterceptor.add(_backButtonInterceptor);
+    _fetchChatRooms();
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_backButtonInterceptor);
+    super.dispose();
+  }
+
+  bool _backButtonInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    // Fetch chat rooms when back button is pressed
+    _fetchChatRooms();
+    return false; // Allow the back button to work as usual
   }
  void _fetchChatRooms() {
     final authState = context.read<AuthBloc>().state;

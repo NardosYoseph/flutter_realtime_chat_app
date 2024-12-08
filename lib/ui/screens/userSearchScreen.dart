@@ -6,6 +6,7 @@ import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
 
 import '../../blocs/auth_bloc/auth_bloc.dart';
+import '../../blocs/chat_bloc/chat_bloc.dart';
 
 class SearchUserScreen extends StatelessWidget {
   const SearchUserScreen({super.key});
@@ -58,7 +59,8 @@ class SearchUserScreen extends StatelessWidget {
       String currentUserId = authState.userId;
       print("Authenticated User: $currentUserId");
                          context.read<UserBloc>().add(SelectUserEvent(currentUserId, user.id));
-                            Navigator.pushReplacement(
+                         context.read<ChatBloc>().add(SelectChatRoomFromSearchEvent(currentUserId, user.id));
+                            Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ChatScreen()),
                     );

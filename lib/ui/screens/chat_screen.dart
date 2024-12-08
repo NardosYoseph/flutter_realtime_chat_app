@@ -20,16 +20,14 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
-String chatRoomId='';
+String username='';
   @override
   void initState() {
     super.initState();
-// final userChatState=context.read<UserBloc>().state;
-// final chatRoomState=context.read<ChatBloc>().state;
-// if(chatRoomState is ChatLoaded){
-//   final roomState=chatRoomState as ChatLoaded;
-//   chatRoomId=roomState.chatRoomId;
-//   context.read<ChatBloc>().add(FetchChatRoomsEvent(chatRoomId));
+//  final userChatState=context.read<UserBloc>().state;
+//  if(userChatState is SelectedUserLoaded){
+//    final roomState=userChatState as SelectedUserLoaded;
+//    username=roomState.user.username;
 // }
   }
 
@@ -49,12 +47,19 @@ String chatRoomId='';
           }
         },
         builder: (context, state) {
+           final userState = context.watch<UserBloc>().state;
+          String username = '';
+          if (userState is SelectedUserLoaded) {
+            username = userState.user.username;
+          }
+
           if (state is ChatLoading) {
             return Center(child: CircularProgressIndicator());
-          } else if (state is ChatLoaded) {
+          } else if (state is ChatLoaded ) {
             final messages = state.messages;
             return Column(
               children: [
+                Text(  username, style: TextStyle(color: Colors.black,fontSize: 16),),
                 SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
@@ -108,17 +113,24 @@ String chatRoomId='';
                           final message = _controller.text;
                           if (message.isNotEmpty) {
                                                        final authState = context.read<AuthBloc>().state;
+                                                       final userState = context.read<UserBloc>().state;
     if (authState is AuthenticatedState) {
+      print("user authenticated");
       String senderId = authState.userId;
-      
+      // if (userState is SelectedUserLoaded){
+      // print("user selected");
+
+      // String recipientId=userState.user.id;
                             context.read<ChatBloc>().add(
                                   SendMessageEvent(
                                     senderId,
                                     message
+                                    // recipientId
                                   ),
-                                );}
+                                );
                             _controller.clear();
-                          }
+                          // }
+                          }}
                         },
                       ),
                     ],

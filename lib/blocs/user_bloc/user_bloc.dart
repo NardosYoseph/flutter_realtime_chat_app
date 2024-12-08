@@ -32,22 +32,24 @@ emit(UsersError("error fetching user"));
 
  Future<void> _onUserSelect(SelectUserEvent event, Emitter<UserState> emit) async {
   try {
+ emit(SelectedUserLoading());
+
     final currentUserId = event.userId; // Assume this comes from the event
     final selectedUserId = event.selectedUserId;
 
-    // Generate chatRoomId by concatenating user IDs in alphabetical order
     final chatRoomId = (currentUserId.compareTo(selectedUserId) < 0)
         ? "$currentUserId\_$selectedUserId"
         : "$selectedUserId\_$currentUserId";
+    User user = await _userRepository.fetchUser(event.selectedUserId);
+      print("user fetched $user");
 
-    // Check if chat room exists or create it in the repository
-    await _userRepository.createOrGetChatRoom(currentUserId, selectedUserId);
-    // final messages=await _chatrRepository.fetchMessages(chatRoomId);
-    // ChatBloc.add(SelectChatRoomEvent(chatRoomId));
-    emit(ChatRoomCreated(chatRoomId));
+  emit(SelectedUserLoaded(user));
+  //   await _userRepository.createOrGetChatRoom(currentUserId, selectedUserId);
+  emit(ChatRoomSelected(chatRoomId));
   } catch (e) {
-    emit(UsersError("Error creating chat room"));
+    emit(UsersError("Error selecting chat room"));
   }
+ 
 }
 
 }

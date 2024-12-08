@@ -31,13 +31,19 @@ class ChatStartedEvent extends ChatEvent{
 class SendMessageEvent extends ChatEvent {
   final String senderId;
   final String message;
-
   SendMessageEvent(this.senderId, this.message);
 
   @override
   List<Object?> get props => [senderId, message];
 }
+class SelectChatRoomFromSearchEvent extends ChatEvent {
+  final String senderId;
+ final String recipientId;
+  SelectChatRoomFromSearchEvent(this.senderId,this.recipientId);
 
+  @override
+  List<Object?> get props => [senderId, recipientId];
+}
 class LoadMessagesEvent extends ChatEvent{
   @override
   // TODO: implement props
