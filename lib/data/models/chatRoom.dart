@@ -9,7 +9,7 @@ class ChatRoom {
   final String? lastMessage; // Last message sent in the chat
   final DateTime? lastMessageTimestamp; // Timestamp of the last message
   final String? lastMessageSender; // Sender ID of the last message
-
+final int? unreadCount;
   ChatRoom({
     required this.id,
     this.otherUserName,
@@ -18,6 +18,7 @@ class ChatRoom {
     this.lastMessage,
     this.lastMessageTimestamp,
     this.lastMessageSender,
+    this.unreadCount,
   });
 
   // Factory constructor to create a ChatRoom from Firestore data
@@ -31,6 +32,7 @@ class ChatRoom {
       lastMessage: data['lastMessage'] as String?,
       lastMessageTimestamp: (data['lastMessageTimestamp'] as Timestamp?)?.toDate(),
       lastMessageSender: data['lastMessageSender'] as String?,
+      unreadCount: data['unreadCount'] as int?,
     );
   }
 
@@ -42,6 +44,7 @@ class ChatRoom {
       'createdAt':createdAt,
       'lastMessageTimestamp': lastMessageTimestamp,
       'lastMessageSender': lastMessageSender,
+      'unreadCount': unreadCount,
     };
   }
   String getOtherUserId(String currentUserId) {
@@ -56,6 +59,7 @@ class ChatRoom {
     String? lastMessage,
     DateTime? lastMessageTimestamp,
     String? lastMessageSender,
+    int? unreadCount,
   }) {
     return ChatRoom(
       id: id ?? this.id,
@@ -65,6 +69,7 @@ class ChatRoom {
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageTimestamp: lastMessageTimestamp ?? this.lastMessageTimestamp,
       lastMessageSender: lastMessageSender ?? this.lastMessageSender,
+      unreadCount: unreadCount ?? this.unreadCount,
     );
   }
 }

@@ -28,6 +28,16 @@ class ChatStartedEvent extends ChatEvent{
   List<Object?> get props => [chatRoomId];
   
 }
+class MarkAsReadEvent extends ChatEvent{
+  final String chatRoomId;
+  final String currentUserId;
+
+  MarkAsReadEvent(this.chatRoomId,this.currentUserId);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [chatRoomId,currentUserId];
+  
+}
 class SendMessageEvent extends ChatEvent {
   final String senderId;
   final String message;

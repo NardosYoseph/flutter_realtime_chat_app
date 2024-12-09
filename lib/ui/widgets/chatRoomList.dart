@@ -21,9 +21,21 @@ class ChatRoomsSection extends StatelessWidget {
           if (state is ChatRoomLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ChatRoomsLoaded) {
+            // Copy and sort the chatRooms to avoid mutating the original list
             final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
-              ..sort((a, b) => b.lastMessageTimestamp!.compareTo(a.lastMessageTimestamp!));
-            return _buildChatRoomsList(context,sortedChatRooms);
+              ..sort((a, b) {
+                final timestampA = a.lastMessageTimestamp;
+                final timestampB = b.lastMessageTimestamp;
+
+                // Handle null timestamps gracefully
+                if (timestampA == null && timestampB == null) return 0;
+                if (timestampA == null) return 1; // Nulls go to the end
+                if (timestampB == null) return -1;
+
+                return timestampB.compareTo(timestampA); // Sort descending
+              });
+
+            return _buildChatRoomsList(context, sortedChatRooms);
           } else {
             return const Center(child: Text("Unable to load chat rooms."));
           }
@@ -36,18 +48,18 @@ class ChatRoomsSection extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Widget _buildChatRoomsList(BuildContext context,List<ChatRoom> chatRooms) {
+  Widget _buildChatRoomsList(BuildContext context, List<ChatRoom> chatRooms) {
     if (chatRooms.isEmpty) {
-      return GestureDetector(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TweenAnimationBuilder<double>(
+      return GestureDetector(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TweenAnimationBuilder<double>(
               tween: Tween<double>(begin: 0.0, end: 20.0),
               duration: const Duration(seconds: 1),
               curve: Curves.easeInOut,
               builder: (context, value, child) {
                 return Padding(
-                  
                   padding: EdgeInsets.only(bottom: value),
                   child: const Text(
                     '👋',
@@ -55,25 +67,24 @@ class ChatRoomsSection extends StatelessWidget {
                   ),
                 );
               },
-
-              onEnd: () {
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  if (context.mounted) {
-                    _buildChatRoomsList(context, chatRooms);
-                  }
-                });
-              },
             ),
-
-          const Center(child: Text("Find friends to start chat.",style: TextStyle(
-                       color:Color.fromARGB(255, 161, 1, 153),
-                      ),)),
-        ],
-
-      ),onTap: (){Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SearchUserScreen()),
-                    );},);
+            const Center(
+              child: Text(
+                "Find friends to start chat.",
+                style: TextStyle(
+                  color: Color.fromARGB(255, 161, 1, 153),
+                ),
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SearchUserScreen()),
+          );
+        },
+      );
     }
     return ListView.builder(
       itemCount: chatRooms.length,

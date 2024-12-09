@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rive/rive.dart'; // Add Rive package for animations
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
-import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/signup_screen.dart';
 

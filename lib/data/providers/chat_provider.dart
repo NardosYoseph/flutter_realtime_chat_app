@@ -86,7 +86,7 @@ class ChatProvider {
       'lastMessage': chatRoom.lastMessage, 
     });
   }
-  Future<void> updateChatRoom(String chatRoomId,String lastMessage,String lastMessageSender,DateTime lastMessageTimestamp,
+  Future<void> updateChatRoom(String chatRoomId,String lastMessage,String lastMessageSender,DateTime lastMessageTimestamp,int? unreadCount
 ) async {
   final chatRoomRef = await _firestore.collection('chatRooms').doc(chatRoomId);
 
@@ -94,7 +94,23 @@ class ChatProvider {
     'lastMessage': lastMessage,
     'lastMessageSender': lastMessageSender,
     'lastMessageTimestamp': lastMessageTimestamp,
+    'unreadCount': unreadCount,
   });
 }
+Future<void> markMessageAsRead(String chatRoomId) async {
+  await FirebaseFirestore.instance
+      .collection('chatRooms')
+      .doc(chatRoomId)
+      .update({'unreadCount': 0});
+}
+
+Stream<List<ChatRoom>> getChatRoomsStream() {
+  return FirebaseFirestore.instance.collection('chatRooms').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => ChatRoom.fromFirestore(doc))
+            .toList(),
+      );
+}
+
 
 }

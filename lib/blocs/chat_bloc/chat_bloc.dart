@@ -23,6 +23,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   on<SendMessageEvent>(_onSendMessage);
   on<FetchChatRoomsEvent>(_onFetchChatRoom);
   on<SelectChatRoomFromSearchEvent>(_onSelectChatRoomFromSearch);
+  on<MarkAsReadEvent>(_onMarkAsRead);
   }
 
 Future<void>  _onSelectChatRoom(SelectChatRoomEvent event,Emitter<ChatState> emit) async{
@@ -44,43 +45,64 @@ try{
 {
   emit(ChatError("can't fetch messages"));
 }
-}
- Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
-    try {
-    print("inside send message bloc");
-String chatRoomId;
-// if (state is ChatLoaded) {
-      chatRoomId = (state as ChatLoaded).chatRoomId;
-    // } else {
-    //   // Generate the chatRoomId dynamically
-    //   chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
-    //       ? "${event.senderId}_${event.recipientId}"
-    //       : "${event.recipientId}_${event.senderId}";
+}Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
+  try {
+    print("Inside send message bloc");
 
-    // }
-      await _chatRepository.sendMessage(
-        chatRoomId,
-        event.senderId,
-        event.message,
-      );
-      print("successful message sent");
+    if (state is! ChatLoaded) {
+      throw Exception("Chat is not loaded.");
+    }
 
-      await _chatRepository.updateChatRoom(chatRoomId, event.message, event.senderId, DateTime.now());
+    final chatState = state as ChatLoaded;
+    final chatRoomId = chatState.chatRoomId;
 
-      // Optionally add the message to the current state
-      final updatedMessages = List<Message>.from((state as ChatLoaded).messages)
-        ..add(Message(senderId: event.senderId, content: event.message));
-         final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
-      
-      final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.senderId);
-      final otherUser = await _userRepository.fetchUser(otherUserId);
+    // Send the message
+    await _chatRepository.sendMessage(
+      chatRoomId,
+      event.senderId,
+      event.message,
+    );
+    print("Message sent successfully");
 
-      emit(ChatLoaded(updatedMessages,chatRoomId,otherUser.username));
+    // Add the message to the current state
+    final updatedMessages = List<Message>.from(chatState.messages)
+      ..add(Message(senderId: event.senderId, content: event.message));
 
+    // Fetch the chat room and handle potential null values
+    final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
+    if (chatRoom == null) {
+      throw Exception("Chat room not found.");
+    }
+
+    final unreadCount = chatRoom.unreadCount ?? 0;
+
+    // Update the chat room with the new message
+    await _chatRepository.updateChatRoom(
+      chatRoomId,
+      event.message,
+      event.senderId,
+      DateTime.now(),
+      unreadCount + 1,
+    );
+
+    // Fetch the other user and handle potential null values
+    final otherUserId = chatRoom.participants.firstWhere(
+      (id) => id != event.senderId,
+      orElse: () => throw Exception("Other user not found in participants."),
+    );
+    final otherUser = await _userRepository.fetchUser(otherUserId);
+    if (otherUser == null || otherUser.username == null) {
+      throw Exception("Other user or username is null.");
+    }
+
+    // Emit updated state
+    emit(ChatLoaded(updatedMessages, chatRoomId, otherUser.username!));
   } catch (e) {
+    print("Error in send message: $e");
     emit(ChatError("Failed to send message: ${e.toString()}"));
   }
-  }
+}
+
 Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event,Emitter<ChatState> emit)async{
   try{
 
@@ -121,4 +143,28 @@ emit(ChatRoomsLoaded(updatedChatRooms));
     emit(ChatError("Error fetching chatrooms"));
   }
 }
+Future<void> _onMarkAsRead(MarkAsReadEvent event, Emitter<ChatState> emit) async {
+  try {
+    final chatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
+
+    if (chatRoom == null) {
+      throw Exception("Chat room not found.");
+    }
+
+    // Check if the current user is NOT the sender of the last message
+    if (chatRoom.lastMessageSender != null &&
+        event.currentUserId != chatRoom.lastMessageSender) {
+      await _chatRepository.markMessageAsRead(event.chatRoomId);
+
+      // Optionally re-fetch the chat room for updated data
+      final updatedChatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
+
+      emit(ChatUpdatedState(updatedChatRoom)); // Update the UI
+    }
+  } catch (e) {
+    print("Error in mark as read: $e");
+    emit(ChatError(e.toString())); // Handle errors gracefully
+  }
+}
+
 }

@@ -24,7 +24,13 @@ class ChatLoaded extends ChatState{
   // TODO: implement props
   List<Object?> get props => [messages,chatRoomId,otherUSerName];
 }
-
+class ChatUpdatedState extends ChatState{
+  ChatRoom? chatRoom;
+  ChatUpdatedState(this.chatRoom);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [chatRoom];
+}
 class ChatError extends ChatState{
   String errorMessage;
   ChatError(this.errorMessage);

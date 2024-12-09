@@ -19,7 +19,20 @@ class ChatRoomTile extends StatelessWidget {
   const ChatRoomTile({Key? key, required this.chatRoom}) : super(key: key);
 
   @override
+
   Widget build(BuildContext context) {
+     final authBloc = context.read<AuthBloc>();
+    final authState = authBloc.state;
+
+    String? currentUserId;
+    if (authState is AuthenticatedState) {
+      currentUserId = authState.userId;
+    }
+
+    final isLastMessageFromCurrentUser = chatRoom.lastMessageSender == currentUserId;
+    // final isLastMessageRead = chatRoom.lastMessageRead ?? false;
+    final hasUnreadMessages = chatRoom.unreadCount != null && chatRoom.unreadCount! > 0;
+
     return ListTile(
       leading: Container(
         decoration: BoxDecoration(
@@ -39,9 +52,30 @@ class ChatRoomTile extends StatelessWidget {
         _truncateMessage(chatRoom.lastMessage ?? "Start chat"),
         style: const TextStyle(color: Colors.grey),
       ),
-      trailing: Text(
-        _formatTimestamp(chatRoom.lastMessageTimestamp),
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _formatTimestamp(chatRoom.lastMessageTimestamp),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          const SizedBox(height: 4),
+          if (isLastMessageFromCurrentUser)
+            Icon(
+              hasUnreadMessages ? Icons.done : Icons.done_all,
+              size: 16,
+              color: hasUnreadMessages ? Colors.blue : Colors.grey,
+            )
+          else if (hasUnreadMessages)
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.red,
+              child: Text(
+                '${chatRoom.unreadCount}',
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+        ],
       ),
       onTap: () {
         final authBloc = context.read<AuthBloc>();
@@ -52,6 +86,9 @@ class ChatRoomTile extends StatelessWidget {
 
     context.read<ChatBloc>().add(
       SelectChatRoomEvent(chatRoom.id, currentUserId),
+    );
+     context.read<ChatBloc>().add(
+      MarkAsReadEvent(chatRoom.id, currentUserId),
     );
         context.read<ChatBloc>().add(SelectChatRoomEvent(chatRoom.id,currentUserId));
         Navigator.push(

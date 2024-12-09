@@ -26,7 +26,6 @@ String username='';
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,23 +165,17 @@ String username='';
                           final message = _controller.text;
                           if (message.isNotEmpty) {
                                                        final authState = context.read<AuthBloc>().state;
-                                                       final userState = context.read<UserBloc>().state;
     if (authState is AuthenticatedState) {
       print("user authenticated");
       String senderId = authState.userId;
-      // if (userState is SelectedUserLoaded){
-      // print("user selected");
-
-      // String recipientId=userState.user.id;
                             context.read<ChatBloc>().add(
                                   SendMessageEvent(
                                     senderId,
                                     message
-                                    // recipientId
                                   ),
                                 );
                             _controller.clear();
-                          // }
+                     
                           }}
                         },
                       ),
