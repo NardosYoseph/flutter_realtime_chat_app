@@ -69,6 +69,7 @@ class SearchUserScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                
                                 Text(
                                   "@${user.username}",
                                   style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -76,8 +77,9 @@ class SearchUserScreen extends StatelessWidget {
                                 const SizedBox(height: 4.0),
                                 Text(
                                   user.email,
-                                  style: const TextStyle(color: Colors.white70),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
+                                SizedBox(height: 10,)
                               ],
                             ),
                           ),
@@ -86,7 +88,7 @@ class SearchUserScreen extends StatelessWidget {
                     );
                   } else {
                     return const Center(
-                      child: Text("Start searching for users by typing a username."),
+                      child: Text("Find friends by typing a username."),
                     );
                   }
                 },

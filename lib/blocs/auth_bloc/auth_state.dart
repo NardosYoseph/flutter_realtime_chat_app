@@ -20,9 +20,10 @@ class RegisterStateLoading extends AuthState{
 class AuthenticatedState extends AuthState{
     String userId;
     String email;
-    AuthenticatedState(this.userId,this.email);
+    String username;
+    AuthenticatedState(this.userId,this.email,this.username);
     @override
-    List<Object?> get props => [userId,email];
+    List<Object?> get props => [userId,email,username];
 }
 class Unauthenticated extends AuthState{
   @override

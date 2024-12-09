@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:real_time_chat_app/data/models/message.dart';
 import 'package:real_time_chat_app/data/models/user.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
 import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 import '../../data/models/chatRoom.dart';
+import '../auth_bloc/auth_bloc.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 
@@ -27,11 +29,17 @@ Future<void>  _onSelectChatRoom(SelectChatRoomEvent event,Emitter<ChatState> emi
 emit(ChatLoading());
 try{
     print("inside fetch bloc to start message");
-await _messageSubscription?.cancel();
-final messages =await _chatRepository
-          .fetchMessages(event.chatRoomId);
-        emit(ChatLoaded(messages,event.chatRoomId));
-     
+
+      // Fetch messages and chatroom details
+      final messages = await _chatRepository.fetchMessages(event.chatRoomId);
+      final chatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
+
+      // Identify other user
+      final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.currentUserId);
+      final otherUser = await _userRepository.fetchUser(otherUserId);
+
+      emit(ChatLoaded(messages, event.chatRoomId, otherUser.username));
+ 
 }catch(e)
 {
   emit(ChatError("can't fetch messages"));
@@ -62,7 +70,12 @@ String chatRoomId;
       // Optionally add the message to the current state
       final updatedMessages = List<Message>.from((state as ChatLoaded).messages)
         ..add(Message(senderId: event.senderId, content: event.message));
-      emit(ChatLoaded(updatedMessages,chatRoomId));
+         final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
+      
+      final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.senderId);
+      final otherUser = await _userRepository.fetchUser(otherUserId);
+
+      emit(ChatLoaded(updatedMessages,chatRoomId,otherUser.username));
 
   } catch (e) {
     emit(ChatError("Failed to send message: ${e.toString()}"));
@@ -70,22 +83,27 @@ String chatRoomId;
   }
 Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event,Emitter<ChatState> emit)async{
   try{
+
 String chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
           ? "${event.senderId}_${event.recipientId}"
           : "${event.recipientId}_${event.senderId}";
 
       // Check or create chat room if it doesn't exist
-      final chatRoom = await _chatRepository.getChatRoom(event.senderId, event.recipientId);
+      final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
       if (chatRoom == null) {
         await _chatRepository.createChatRoom(event.senderId, event.recipientId);
       }
+      
+      final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.senderId);
+      final otherUser = await _userRepository.fetchUser(otherUserId);
+
        print("inside fetch bloc to start message");
 
 final messages =await _chatRepository
           .fetchMessages(chatRoomId);
-        emit(ChatLoaded(messages,chatRoomId));
+        emit(ChatLoaded(messages,chatRoomId,otherUser.username));
   }catch(e){
-
+emit(ChatError("error loading chat"));
   }
 }
 Future<void> _onFetchChatRoom(FetchChatRoomsEvent event, Emitter<ChatState> emit) async{

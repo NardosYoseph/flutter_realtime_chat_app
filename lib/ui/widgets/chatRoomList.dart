@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import '../../data/models/chatRoom.dart';
+import '../screens/userSearchScreen.dart';
 import 'chatRoomTile.dart';
 
 class ChatRoomsSection extends StatelessWidget {
@@ -20,10 +21,9 @@ class ChatRoomsSection extends StatelessWidget {
           if (state is ChatRoomLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is ChatRoomsLoaded) {
-            // Sort chat rooms by lastMessageTimestamp in descending order
             final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
               ..sort((a, b) => b.lastMessageTimestamp!.compareTo(a.lastMessageTimestamp!));
-            return _buildChatRoomsList(sortedChatRooms);
+            return _buildChatRoomsList(context,sortedChatRooms);
           } else {
             return const Center(child: Text("Unable to load chat rooms."));
           }
@@ -36,9 +36,44 @@ class ChatRoomsSection extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Widget _buildChatRoomsList(List<ChatRoom> chatRooms) {
+  Widget _buildChatRoomsList(BuildContext context,List<ChatRoom> chatRooms) {
     if (chatRooms.isEmpty) {
-      return const Center(child: Text("No chat rooms available."));
+      return GestureDetector(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: 20.0),
+              duration: const Duration(seconds: 1),
+              curve: Curves.easeInOut,
+              builder: (context, value, child) {
+                return Padding(
+                  
+                  padding: EdgeInsets.only(bottom: value),
+                  child: const Text(
+                    '👋',
+                    style: TextStyle(fontSize: 48.0),
+                  ),
+                );
+              },
+
+              onEnd: () {
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (context.mounted) {
+                    _buildChatRoomsList(context, chatRooms);
+                  }
+                });
+              },
+            ),
+
+          const Center(child: Text("Find friends to start chat.",style: TextStyle(
+                       color:Color.fromARGB(255, 161, 1, 153),
+                      ),)),
+        ],
+
+      ),onTap: (){Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchUserScreen()),
+                    );},);
     }
     return ListView.builder(
       itemCount: chatRooms.length,

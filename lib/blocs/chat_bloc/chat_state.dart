@@ -18,10 +18,11 @@ class ChatLoading extends ChatState{
 class ChatLoaded extends ChatState{
   List<Message> messages;
   String chatRoomId;
-  ChatLoaded(this.messages,this.chatRoomId);
+  String otherUSerName;
+  ChatLoaded(this.messages,this.chatRoomId,this.otherUSerName);
   @override
   // TODO: implement props
-  List<Object?> get props => [messages,chatRoomId];
+  List<Object?> get props => [messages,chatRoomId,otherUSerName];
 }
 
 class ChatError extends ChatState{

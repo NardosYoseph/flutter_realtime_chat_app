@@ -19,7 +19,7 @@ class CustomDrawer extends StatelessWidget {
                 child: Column(
               children: [
                 CircleAvatar(
-                  radius: 45,
+                  radius: 40,
                   child: Icon(
                     Icons.person,
                     size: 50,
@@ -29,7 +29,13 @@ class CustomDrawer extends StatelessWidget {
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
                     if(state is AuthenticatedState){
-                    return Text(state.email,style: TextStyle(color: Colors.white),);}
+                    return Column(
+                      children: [
+                        Text('@${state.username}',style: TextStyle(color: Colors.white,fontSize: 14),),
+
+                        Text(state.email,style: TextStyle(color: Colors.white),),
+                      ],
+                    );}
                       else{
                     return SizedBox();
                   }
@@ -47,6 +53,15 @@ class CustomDrawer extends StatelessWidget {
                     );
             },
             child: ListTile(leading: Icon(Icons.home,),title: Text("Home"),))
+            ,
+          GestureDetector(
+            onTap: (){
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+            },
+            child: ListTile(leading: Icon(Icons.settings,),title: Text("Settings"),))
         ],
       ),
     );

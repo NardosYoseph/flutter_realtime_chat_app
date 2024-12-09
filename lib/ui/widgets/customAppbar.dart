@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color.fromARGB(255, 170, 18, 107),
       elevation: 20,
       actions: [Row(children: [IconButton(icon:Icon(Icons.search),
-      onPressed: (){ Navigator.pushReplacement(
+      onPressed: (){ Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SearchUserScreen()),
                     );

@@ -12,12 +12,12 @@ class FetchChatRoomsEvent extends ChatEvent {
 }
 class SelectChatRoomEvent extends ChatEvent {
   final String chatRoomId;
-
-  SelectChatRoomEvent(this.chatRoomId);
+final String currentUserId;
+  SelectChatRoomEvent(this.chatRoomId,this.currentUserId);
   
   @override
   // TODO: implement props
-  List<Object?> get props => [chatRoomId];
+  List<Object?> get props => [chatRoomId,currentUserId];
 }
 class ChatStartedEvent extends ChatEvent{
   final String chatRoomId;

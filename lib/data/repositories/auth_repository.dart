@@ -1,47 +1,50 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:real_time_chat_app/data/models/user.dart';
-
 import '../providers/auth_provider.dart';
+import 'user_repository.dart';
+
 class AuthRepository {
- final AuthProvider _authProvider;
-  AuthRepository({AuthProvider? authProvider}):
-  _authProvider=authProvider ?? AuthProvider();
+  final AuthProvider _authProvider;
+  final UserRepository _userRepository;
 
-Future<User> login(String email, String password) async {
-  try {
-    // Authenticate the user
-    final userCredential = await _authProvider.login(email, password);
-print(userCredential);
-    // Get the user ID from the UserCredential
-    final uid = userCredential.user?.uid;
+  AuthRepository({
+    AuthProvider? authProvider,
+    UserRepository? userRepository,
+  })  : _authProvider = authProvider ?? AuthProvider(),
+        _userRepository = userRepository ?? UserRepository();
 
-    if (uid == null) {
-      throw Exception('User ID not found');
-    }
+  Future<User> login(String email, String password) async {
+    try {
+      final userCredential = await _authProvider.login(email, password);
+      print(userCredential);
 
-    // Retrieve user data from Firestore
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final uid = userCredential.user?.uid;
 
-    if (!userDoc.exists) {
-      throw Exception('User profile not found in Firestore');
-    }
+      if (uid == null) {
+        throw Exception('User ID not found');
+      }
 
-    // Map the Firestore document to your User model
-    return User.fromFirestore(userDoc);
-  } catch (e) {
-    throw Exception('Failed to log in: $e');
-  }
-}
-
-  Future<void> register(String email,String password,String name)async{
-print("in repo class");
-
-    try{
-final response=await _authProvider.SignUp(email, password, name);
-print("in repo class try success");
-    }catch(e){
-      throw Exception('error registoring user $e');
+      // Fetch user details using UserRepository
+      return await _userRepository.fetchUser(uid);
+    } catch (e) {
+      throw Exception('Failed to log in: $e');
     }
   }
-  
+
+  Future<User> register(String email, String password, String name) async {
+    print("in repo class");
+
+    try {
+      final userCredential = await _authProvider.SignUp(email, password, name);
+        final uid = userCredential.user?.uid;
+
+     if (uid == null) {
+        throw Exception('User ID not found');
+      }
+      print("in repo class try success");
+
+      return await _userRepository.fetchUser(uid);
+    } catch (e) {
+      throw Exception('Error registering user: $e');
+    }
+  }
 }

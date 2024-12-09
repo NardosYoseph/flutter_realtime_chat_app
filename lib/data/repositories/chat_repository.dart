@@ -71,11 +71,12 @@ class ChatRepository {
       throw Exception("Failed to create or retrieve chat room: $e");
     }
   }
-   Future<ChatRoom?> getChatRoom(String currentUserId, String otherUserId) async {
+
+  Future<ChatRoom?> getChatRoom(String chatRoomId) async {
     // Generate a consistent chatRoomId using both user IDs
-    final chatRoomId = (currentUserId.compareTo(otherUserId) < 0)
-        ? "$currentUserId\_$otherUserId"
-        : "$otherUserId\_$currentUserId";
+    // final chatRoomId = (currentUserId.compareTo(otherUserId) < 0)
+    //     ? "$currentUserId\_$otherUserId"
+    //     : "$otherUserId\_$currentUserId";
 
     try {
       // Check if the chat room already exists
@@ -89,4 +90,23 @@ class ChatRepository {
       throw Exception("Failed to create or retrieve chat room: $e");
     }
   }
+  //  Future<ChatRoom?> getChatRoom(String currentUserId, String otherUserId) async {
+  //   // Generate a consistent chatRoomId using both user IDs
+  //   final chatRoomId = (currentUserId.compareTo(otherUserId) < 0)
+  //       ? "$currentUserId\_$otherUserId"
+  //       : "$otherUserId\_$currentUserId";
+
+  //   try {
+  //     // Check if the chat room already exists
+  //     ChatRoom? existingChatRoom = await _chatProvider.getChatRoomById(chatRoomId);
+
+  //      print("already exst chatroom");
+  //       return existingChatRoom;
+    
+  //   } catch (e) {
+  //     print("Error in createOrGenerateChatRoom: $e");
+  //     throw Exception("Failed to create or retrieve chat room: $e");
+  //   }
+  // }
+  
 }

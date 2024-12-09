@@ -26,9 +26,6 @@ final List<Map<String, String>> demoUsers = [
     {'name': 'Bob', 'avatarUrl': 'https://via.placeholder.com/150'},
     {'name': 'Charlie', 'avatarUrl': 'https://via.placeholder.com/150'},
     {'name': 'Daisy', 'avatarUrl': 'https://via.placeholder.com/150'},
-    {'name': 'Eve', 'avatarUrl': 'https://via.placeholder.com/150'},
-    {'name': 'Eve', 'avatarUrl': 'https://via.placeholder.com/150'},
-    {'name': 'Eve', 'avatarUrl': 'https://via.placeholder.com/150'},
   ];
 
  @override
@@ -65,6 +62,9 @@ final List<Map<String, String>> demoUsers = [
         children: [
           TopFriendsSection(),
           AllChatsHeader(),
+          SizedBox(
+            height: 10,
+          ),
           ChatRoomsSection(),
         ],
       ),
