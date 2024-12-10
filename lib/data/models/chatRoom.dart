@@ -18,7 +18,7 @@ final int? unreadCount;
     this.lastMessage,
     this.lastMessageTimestamp,
     this.lastMessageSender,
-    this.unreadCount,
+    this.unreadCount=0,
   });
 
   // Factory constructor to create a ChatRoom from Firestore data

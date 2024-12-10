@@ -19,10 +19,11 @@ class ChatLoaded extends ChatState{
   List<Message> messages;
   String chatRoomId;
   String otherUSerName;
-  ChatLoaded(this.messages,this.chatRoomId,this.otherUSerName);
+  String? lastMessageSender;
+  ChatLoaded(this.messages,this.chatRoomId,this.otherUSerName,this.lastMessageSender);
   @override
   // TODO: implement props
-  List<Object?> get props => [messages,chatRoomId,otherUSerName];
+  List<Object?> get props => [messages,chatRoomId,otherUSerName,this.lastMessageSender];
 }
 class ChatUpdatedState extends ChatState{
   ChatRoom? chatRoom;

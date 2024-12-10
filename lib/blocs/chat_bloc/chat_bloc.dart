@@ -24,6 +24,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   on<FetchChatRoomsEvent>(_onFetchChatRoom);
   on<SelectChatRoomFromSearchEvent>(_onSelectChatRoomFromSearch);
   on<MarkAsReadEvent>(_onMarkAsRead);
+  on<DeleteMessageEvent>(_onDeleteMessage);
   }
 
 Future<void>  _onSelectChatRoom(SelectChatRoomEvent event,Emitter<ChatState> emit) async{
@@ -34,18 +35,23 @@ try{
       // Fetch messages and chatroom details
       final messages = await _chatRepository.fetchMessages(event.chatRoomId);
       final chatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
+print("chat room inside onselect bloc ${chatRoom?.participants ?? 'No partic'}");
+print("chat room last message sender inside onselect bloc ${chatRoom?.lastMessageSender ?? 'No sender'}");
 
       // Identify other user
       final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.currentUserId);
       final otherUser = await _userRepository.fetchUser(otherUserId);
 
-      emit(ChatLoaded(messages, event.chatRoomId, otherUser.username));
+      emit(ChatLoaded(messages, event.chatRoomId, otherUser.username, chatRoom.lastMessageSender));
+
  
 }catch(e)
 {
   emit(ChatError("can't fetch messages"));
 }
-}Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
+}
+
+Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
   try {
     print("Inside send message bloc");
 
@@ -96,38 +102,99 @@ try{
     }
 
     // Emit updated state
-    emit(ChatLoaded(updatedMessages, chatRoomId, otherUser.username!));
+    emit(ChatLoaded(updatedMessages, chatRoomId, otherUser.username,event.senderId));
   } catch (e) {
     print("Error in send message: $e");
     emit(ChatError("Failed to send message: ${e.toString()}"));
   }
 }
+Future<void> _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
+  try {
+    print("Inside delete message bloc");
 
-Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event,Emitter<ChatState> emit)async{
-  try{
+    if (state is! ChatLoaded) {
+      throw Exception("Chat is not loaded.");
+    }
 
-String chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
-          ? "${event.senderId}_${event.recipientId}"
-          : "${event.recipientId}_${event.senderId}";
+    final chatState = state as ChatLoaded;
+    final chatRoomId = chatState.chatRoomId;
 
-      // Check or create chat room if it doesn't exist
-      final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
-      if (chatRoom == null) {
-        await _chatRepository.createChatRoom(event.senderId, event.recipientId);
-      }
-      
-      final otherUserId = chatRoom!.participants.firstWhere((id) => id != event.senderId);
-      final otherUser = await _userRepository.fetchUser(otherUserId);
+    // Delete the message
+    await _chatRepository.deleteMessage(chatRoomId, event.messageId!);
 
-       print("inside fetch bloc to start message");
+    // Re-fetch messages to update the UI
+    final updatedMessages = await _chatRepository.fetchMessages(chatRoomId);
 
-final messages =await _chatRepository
-          .fetchMessages(chatRoomId);
-        emit(ChatLoaded(messages,chatRoomId,otherUser.username));
-  }catch(e){
-emit(ChatError("error loading chat"));
+    // Check if the deleted message was the last message in the chat room
+    if (updatedMessages.isNotEmpty) {
+      final lastMessage = updatedMessages.last;
+
+      // Update the chat room's last message
+      await _chatRepository.updateChatRoom(
+        chatRoomId,
+        lastMessage.content,
+        lastMessage.senderId,
+        lastMessage.timestamp ?? DateTime.now(),
+        0, // Reset unread count or handle appropriately
+      );
+
+      // Pass the lastMessage.senderId as the lastMessageSender to the state
+      emit(ChatLoaded(updatedMessages, chatRoomId, chatState.otherUSerName, lastMessage.senderId));
+    } else {
+      // Handle case where all messages are deleted (e.g., empty the last message)
+      await _chatRepository.updateChatRoom(
+        chatRoomId,
+        "", // No last message
+        "", // No sender
+        DateTime.now(),
+        0, // Reset unread count
+      );
+
+      // If no messages are left, pass an empty string or handle accordingly
+      emit(ChatLoaded(updatedMessages, chatRoomId, chatState.otherUSerName, ""));
+    }
+
+    print("Message deleted successfully");
+  } catch (e) {
+    print("Error deleting message: $e");
+    emit(ChatError("Failed to delete message"));
   }
 }
+
+Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event, Emitter<ChatState> emit) async {
+  try {
+    String chatRoomId = (event.senderId.compareTo(event.recipientId) < 0)
+        ? "${event.senderId}_${event.recipientId}"
+        : "${event.recipientId}_${event.senderId}";
+
+    // Check if the chat room exists
+    var chatRoom = await _chatRepository.getChatRoom(chatRoomId);
+    if (chatRoom == null) {
+      // Create the chat room if it doesn't exist
+      await _chatRepository.createChatRoom(event.senderId, event.recipientId);
+      chatRoom = await _chatRepository.getChatRoom(chatRoomId);
+    }
+
+    if (chatRoom == null) {
+      emit(ChatError("Failed to create or fetch chat room"));
+      return;
+    }
+
+    // Fetch the other user's details
+    final otherUserId = chatRoom.participants.firstWhere((id) => id != event.senderId);
+    final otherUser = await _userRepository.fetchUser(otherUserId);
+
+    // Fetch messages for the chat room
+    final messages = await _chatRepository.fetchMessages(chatRoomId);
+
+    // Emit the loaded state
+    emit(ChatLoaded(messages, chatRoomId, otherUser.username,chatRoom.lastMessageSender));
+  } catch (e) {
+    print("Error: $e");
+    emit(ChatError("Error loading chat"));
+  }
+}
+
 Future<void> _onFetchChatRoom(FetchChatRoomsEvent event, Emitter<ChatState> emit) async{
   emit(ChatRoomLoading());
   try{
@@ -146,21 +213,23 @@ emit(ChatRoomsLoaded(updatedChatRooms));
 Future<void> _onMarkAsRead(MarkAsReadEvent event, Emitter<ChatState> emit) async {
   try {
     final chatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
+      print("markasread get chat room $chatRoom");
 
     if (chatRoom == null) {
       throw Exception("Chat room not found.");
     }
+          print("sender of the last message ${chatRoom.lastMessageSender}");
+          print("current user ${event.currentUserId}");
 
-    // Check if the current user is NOT the sender of the last message
-    if (chatRoom.lastMessageSender != null &&
-        event.currentUserId != chatRoom.lastMessageSender) {
+   
+          print("current user is NOT the sender of the last message");
       await _chatRepository.markMessageAsRead(event.chatRoomId);
-
+print("mark as read success");
       // Optionally re-fetch the chat room for updated data
       final updatedChatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
 
-      emit(ChatUpdatedState(updatedChatRoom)); // Update the UI
-    }
+      // emit(ChatUpdatedState(updatedChatRoom)); // Update the UI
+    
   } catch (e) {
     print("Error in mark as read: $e");
     emit(ChatError(e.toString())); // Handle errors gracefully

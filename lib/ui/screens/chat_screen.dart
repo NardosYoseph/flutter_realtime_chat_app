@@ -22,13 +22,31 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
 String username='';
-  @override
-  void initState() {
-    super.initState();
-  }
+@override
+void initState() {
+  super.initState();
+
+}
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+      final chatBloc = context.read<ChatBloc>();
+  final authBloc = context.read<AuthBloc>();
+
+  final chatState = chatBloc.state;
+  final authState = authBloc.state;
+
+    return BlocListener<ChatBloc, ChatState>(
+    listener: (context, chatState) {
+      if (authState is AuthenticatedState && chatState is ChatLoaded) {
+        final chatRoomId = chatState.chatRoomId;
+        final currentUserId = authState.userId;
+if(chatState.lastMessageSender!=null&&chatState.lastMessageSender!=currentUserId){
+        print('MarkAsReadEvent triggered for chatRoomId: $chatRoomId, userId: $currentUserId ,lastmessagesender: ${chatState.lastMessageSender}');
+        context.read<ChatBloc>().add(MarkAsReadEvent(chatRoomId, currentUserId));}
+      }
+    },
+    child: Scaffold(
       // drawer: CustomDrawer(),
       drawerScrimColor: Colors.white,
       appBar: AppBar(
@@ -94,12 +112,58 @@ String username='';
                 // Text(  state.otherUSerName, style: TextStyle(color: Colors.black,fontSize: 16),),
                 SizedBox(height: 10),
                 Expanded(
+                  
                   child: ListView.builder(
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       final message = messages[index];
                       final isSentByMe = message.senderId == userId;
-                      return Align(
+         return   GestureDetector(
+  onTap: () {
+    // Show a dialog to confirm message deletion or editing
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 15.0),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+           
+              // TextButton.icon(
+              //   onPressed: () {
+              //     // Handle edit logic here
+              //     Navigator.of(context).pop();
+              //   },
+              //   icon: Icon(Icons.edit, color: Colors.blue),
+              //   label: Text(
+              //     "Edit",
+              //     style: TextStyle(color: Colors.blue, fontSize: 16),
+              //   ),
+              // ),
+              Divider(),
+              TextButton.icon(
+                onPressed: () {
+                  // Handle delete logic here
+                  context.read<ChatBloc>().add(DeleteMessageEvent(message.id));
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(Icons.delete, color: Colors.red),
+                label: Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  },
+                      child:  Align(
         alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
@@ -142,7 +206,7 @@ String username='';
             ],
           ),
         ),
-      );
+      ),);
                     },
                   ),
                 ),
@@ -193,6 +257,6 @@ String username='';
           }
         },
       ),
-    );
+     ) );
   }
 }

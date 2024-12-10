@@ -87,9 +87,7 @@ class ChatRoomTile extends StatelessWidget {
     context.read<ChatBloc>().add(
       SelectChatRoomEvent(chatRoom.id, currentUserId),
     );
-     context.read<ChatBloc>().add(
-      MarkAsReadEvent(chatRoom.id, currentUserId),
-    );
+ 
         context.read<ChatBloc>().add(SelectChatRoomEvent(chatRoom.id,currentUserId));
         Navigator.push(
           context,

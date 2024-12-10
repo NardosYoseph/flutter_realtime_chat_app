@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
+import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 
 import '../screens/homeScreen.dart';
 
@@ -56,12 +57,13 @@ class CustomDrawer extends StatelessWidget {
             ,
           GestureDetector(
             onTap: (){
+              context.read<AuthBloc>().add(LogoutEvent());
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
             },
-            child: ListTile(leading: Icon(Icons.settings,),title: Text("Settings"),))
+            child: ListTile(leading: Icon(Icons.logout,),title: Text("Logout"),))
         ],
       ),
     );

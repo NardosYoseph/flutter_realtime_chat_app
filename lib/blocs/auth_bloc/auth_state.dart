@@ -52,3 +52,8 @@ RegistrationErrorState({required this.errorMessage});
   @override
   List<Object?> get props => [errorMessage];
 }
+class LoggedOutState extends AuthState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}

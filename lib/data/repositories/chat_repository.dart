@@ -25,6 +25,15 @@ class ChatRepository {
       print("$e");
     }
   }
+   Future<void> deleteMessage(String chatRoomId, String messageId) async{
+    try{
+    print("inside send repo");
+
+     final response=await _chatProvider.deleteMessage(chatRoomId, messageId);
+    }catch(e){
+      print("$e");
+    }
+  }
   // Fetch all chat rooms for a specific user
   Future<List<ChatRoom>> fetchChatRooms(String userId) async {
     print("Inside fetch chat rooms provider");
@@ -89,8 +98,11 @@ class ChatRepository {
   
    Future<void> markMessageAsRead(String chatRoomId) async{
     try{
-      final response=await _chatProvider.markMessageAsRead(chatRoomId);
-     
+      print("inside markasread repo try");
+
+      final response=await _chatProvider.markMessageAsRead(chatRoomId); 
+      print("inside markasread repo try success");
+
     }
     catch(e){
       print("$e");

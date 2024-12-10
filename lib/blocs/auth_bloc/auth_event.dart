@@ -22,3 +22,9 @@ RegisterEvent(this.username,this.email,this.password);
   List<Object?> get props => [username,email,password];
 
 }
+class LogoutEvent extends AuthEvent{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}

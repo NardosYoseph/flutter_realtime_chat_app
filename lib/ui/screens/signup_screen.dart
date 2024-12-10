@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:lottie/lottie.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
@@ -12,25 +11,18 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();  // Add GlobalKey
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background animation or gradient
-          // Positioned.fill(
-          //   child: Lottie.asset(
-          //     'assets/background_animation.json', // You can replace this with any background animation you prefer
-          //     repeat: true,
-          //     animate: true,
-          //   ),
-          // ),
-          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: Form(
+                key: _formKey,  // Set the GlobalKey
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -51,16 +43,6 @@ class SignupScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
 
-                      // // Friendly Teddy Bear Animation
-                      // Lottie.asset(
-                      //   'assets/teddy_bear.json', // Friendly character animation
-                      //   height: 150,
-                      //   width: 150,
-                      //   repeat: true,
-                      //   animate: true,
-                      // ),
-
-                      // Username input field
                       UsernameTextField(
                         controller: usernameController,
                         validator: (value) {
@@ -122,10 +104,10 @@ class SignupScreen extends StatelessWidget {
                           }
                           return ElevatedButton(
                             onPressed: () {
-                              final email = emailController.text.trim();
-                              final password = passwordController.text.trim();
-                              final username = usernameController.text.trim();
-                              if (email.isNotEmpty && password.isNotEmpty) {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                final email = emailController.text.trim();
+                                final password = passwordController.text.trim();
+                                final username = usernameController.text.trim();
                                 context.read<AuthBloc>().add(
                                   RegisterEvent(username, email, password),
                                 );
@@ -142,7 +124,7 @@ class SignupScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: Text('Signup', style: TextStyle(fontSize: 18,color: Colors.white)),
+                            child: Text('Signup', style: TextStyle(fontSize: 18, color: Colors.white)),
                           );
                         },
                       ),

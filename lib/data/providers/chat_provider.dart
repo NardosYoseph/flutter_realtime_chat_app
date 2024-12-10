@@ -24,7 +24,22 @@ class ChatProvider {
       throw Exception("Failed to fetch messages: $e");
     }
   }
+ Future<void> deleteMessage(String chatRoomId, String messageId) async {
+    print("Inside delete message provider");
+    try {
+      await _firestore
+          .collection('chatRooms')
+          .doc(chatRoomId)
+          .collection('messages')
+          .doc(messageId)
+          .delete();
 
+      print("Delete message provider success");
+    } catch (e) {
+      print("Delete message provider error $e");
+      throw Exception("Failed to delete message: $e");
+    }
+  }
   // Send a message to a specific chat room
   Future<void> sendMessage(String chatRoomId, String senderId, String messageContent) async {
     try {
@@ -74,6 +89,7 @@ class ChatProvider {
         participants: List<String>.from(data['participants']),
         createdAt: (data['createdAt'] as Timestamp).toDate(),
         lastMessage: null, 
+        lastMessageSender: data['lastMessageSender']
       );
     }
     return null;
@@ -98,10 +114,14 @@ class ChatProvider {
   });
 }
 Future<void> markMessageAsRead(String chatRoomId) async {
-  await FirebaseFirestore.instance
+      print("inside markasread provider try ");
+
+ final res= await FirebaseFirestore.instance
       .collection('chatRooms')
       .doc(chatRoomId)
       .update({'unreadCount': 0});
+      print("inside markasread provider try success");
+
 }
 
 Stream<List<ChatRoom>> getChatRoomsStream() {

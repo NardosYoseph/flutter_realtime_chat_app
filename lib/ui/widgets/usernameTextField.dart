@@ -19,7 +19,7 @@ class UsernameTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'Enter your username',
-        prefixIcon: Icon(Icons.email),
+        prefixIcon: Icon(Icons.person),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

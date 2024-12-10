@@ -8,7 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       iconTheme: IconThemeData(color: Colors.white),
-      title: const Text("MyChat",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+      title: const Text("Chat App",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
       backgroundColor: const Color.fromARGB(255, 170, 18, 107),
       elevation: 20,
       actions: [Row(children: [IconButton(icon:Icon(Icons.search),
