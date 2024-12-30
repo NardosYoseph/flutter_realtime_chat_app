@@ -35,13 +35,11 @@ class ChatRepository {
     }
   }
   // Fetch all chat rooms for a specific user
-  Future<List<ChatRoom>> fetchChatRooms(String userId) async {
+  Stream<List<ChatRoom>> fetchChatRooms(String userId) {
     print("Inside fetch chat rooms provider");
     try {
-      final chatRooms= await _chatProvider.fetchChatRooms(userId);
-
-      print("Fetch chat rooms repo success $chatRooms");
-      return chatRooms;
+return _chatProvider.fetchChatRooms(userId);
+      
     } catch (e) {
       print("Fetch chat rooms provider error $e");
       throw Exception("Failed to fetch chat rooms: $e");

@@ -46,16 +46,22 @@ class SearchUserScreen extends StatelessWidget {
                   if (state is UsersLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is UsersLoaded) {
+                            final authState = context.read<AuthBloc>().state;
+
+                                          if (authState is AuthenticatedState) {
+      String currentUserId = authState.userId;
+       final filteredUsers = state.users.where((user) => user.id != currentUserId).toList();
+
                     return ListView.builder(
-                      itemCount: state.users.length,
+                      itemCount: filteredUsers.length,
                       itemBuilder: (context, index) {
-                        final user = state.users[index];
+
+  
+                        final user = filteredUsers[index];
                         // Return the widget here
                         return GestureDetector(
                           onTap: (){
                            print("User clicked: ${user.username}");
-                            final authState = context.read<AuthBloc>().state;
-    if (authState is AuthenticatedState) {
       String currentUserId = authState.userId;
       print("Authenticated User: $currentUserId");
                          context.read<UserBloc>().add(SelectUserEvent(currentUserId, user.id));
@@ -64,7 +70,7 @@ class SearchUserScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => ChatScreen()),
                     );
-                             }   },
+                               },
                           child: Container(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,13 +90,17 @@ class SearchUserScreen extends StatelessWidget {
                             ),
                           ),
                         );
-                      },
+                        }
+                    
                     );
+                    
+                    }
                   } else {
                     return const Center(
                       child: Text("Find friends by typing a username."),
                     );
                   }
+                  return SizedBox();
                 },
               ),
             ),

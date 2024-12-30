@@ -65,21 +65,19 @@ class ChatProvider {
   }
 
   // Fetch all chat rooms for a specific user
-  Future<List<ChatRoom>> fetchChatRooms(String userId) async {
-    print("Inside fetch chat rooms provider");
-    try {
-      final snapshot = await _firestore
-          .collection('chatRooms')
-          .where('participants', arrayContains: userId)
-          .get();
+  Stream<List<ChatRoom>> fetchChatRooms(String userId) {
+  print("Listening to fetch chat rooms stream");
+  return _firestore
+      .collection('chatRooms')
+      .where('participants', arrayContains: userId)
+      .snapshots()
+      .map((snapshot) {
+        return snapshot.docs
+            .map((doc) => ChatRoom.fromFirestore(doc))
+            .toList();
+      });
+}
 
-      print("Fetch chat rooms provider success $snapshot");
-      return snapshot.docs.map((doc) => ChatRoom.fromFirestore(doc)).toList();
-    } catch (e) {
-      print("Fetch chat rooms provider error $e");
-      throw Exception("Failed to fetch chat rooms: $e");
-    }
-  }
   Future<ChatRoom?> getChatRoomById(String chatRoomId) async {
     final doc = await _firestore.collection('chatRooms').doc(chatRoomId).get();
     if (doc.exists) {

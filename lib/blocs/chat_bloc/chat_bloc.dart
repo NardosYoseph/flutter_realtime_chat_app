@@ -26,7 +26,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   on<MarkAsReadEvent>(_onMarkAsRead);
   on<DeleteMessageEvent>(_onDeleteMessage);
   }
-
 Future<void>  _onSelectChatRoom(SelectChatRoomEvent event,Emitter<ChatState> emit) async{
 emit(ChatLoading());
 try{
@@ -198,14 +197,20 @@ Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event, Em
 Future<void> _onFetchChatRoom(FetchChatRoomsEvent event, Emitter<ChatState> emit) async{
   emit(ChatRoomLoading());
   try{
-final chatRooms =await _chatRepository.fetchChatRooms(event.userId);
-// Attach computed fields to each chat room
-     final updatedChatRooms = await Future.wait(chatRooms.map((chatRoom) async {
+_chatRoomSubscription =_chatRepository.fetchChatRooms(event.userId).listen((chatRooms) async{
+ final updatedChatRooms = await Future.wait(chatRooms.map((chatRoom) async {
       final otherUserId = chatRoom.getOtherUserId(event.userId);
       final otherUser = await _userRepository.fetchUser(otherUserId);
       return chatRoom.copyWith(otherUserName: otherUser.username);
     }));
 emit(ChatRoomsLoaded(updatedChatRooms));
+
+},
+      onError: (error) {
+        emit(ChatError("Error fetching chat rooms: $error"));
+      },
+);
+    
   }catch(e){
     emit(ChatError("Error fetching chatrooms"));
   }
