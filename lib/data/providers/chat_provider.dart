@@ -6,24 +6,26 @@ class ChatProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Fetch messages from a specific chat room
-  Future<List<Message>> fetchMessages(String chatRoomId) async {
-    print("Inside fetch messages provider");
-    try {
-      final snapshot = await _firestore
-          .collection('chatRooms')
-          .doc(chatRoomId)
-          .collection('messages')
-          .orderBy('timestamp')
-          .limit(20)
-          .get();
-
-      print("Fetch messages provider success");
-      return snapshot.docs.map((doc) => Message.fromFirestore(doc)).toList();
-    } catch (e) {
-      print("Fetch messages provider error $e");
-      throw Exception("Failed to fetch messages: $e");
-    }
+  Stream<List<Message>> fetchMessages(String chatRoomId) {
+  print("Inside fetch messages provider (real-time)");
+  try {
+    return _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .orderBy('timestamp')
+        .limit(20)
+        .snapshots()
+        .map((snapshot) {
+          print("Fetch messages stream provider success");
+          return snapshot.docs.map((doc) => Message.fromFirestore(doc)).toList();
+        });
+  } catch (e) {
+    print("Fetch messages stream provider error $e");
+    throw Exception("Failed to fetch messages: $e");
   }
+}
+
  Future<void> deleteMessage(String chatRoomId, String messageId) async {
     print("Inside delete message provider");
     try {

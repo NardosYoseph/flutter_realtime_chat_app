@@ -6,10 +6,10 @@ class ChatRepository {
   ChatProvider _chatProvider;
   ChatRepository({ChatProvider? chatProvider}):_chatProvider=chatProvider?? ChatProvider();
 
-  Future<List<Message>> fetchMessages(String chatRoomId) async{
+  Stream<List<Message>> fetchMessages(String chatRoomId){
     try{
-      final response=await _chatProvider.fetchMessages(chatRoomId);
-      return response;
+    return _chatProvider.fetchMessages(chatRoomId);
+     
     }
     catch(e){
       print("$e");

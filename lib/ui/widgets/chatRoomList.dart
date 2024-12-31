@@ -11,21 +11,22 @@ class ChatRoomsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: ()async{
-        final authState= context.read<AuthBloc>().state;
-        if(authState is AuthenticatedState){
-          final userId=authState.userId;
-        context.read<ChatBloc>().add(FetchChatRoomsEvent(userId));}
-        },
-      child: Expanded(
+    return 
+    // RefreshIndicator(
+    //   onRefresh: ()async{
+    //     final authState= context.read<AuthBloc>().state;
+    //     if(authState is AuthenticatedState){
+    //       final userId=authState.userId;
+    //     context.read<ChatBloc>().add(FetchChatRoomsEvent(userId));}
+    //     },
+      // child: 
+ Expanded(
         child: BlocConsumer<ChatBloc, ChatState>(
         listener: (context, state) {
             if (state is ChatError) {
               _showErrorSnackbar(context, state.errorMessage);
             }
           },
-
           builder: (context, state) {
             if (state is ChatRoomLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -35,13 +36,11 @@ class ChatRoomsSection extends StatelessWidget {
                 ..sort((a, b) {
                   final timestampA = a.lastMessageTimestamp;
                   final timestampB = b.lastMessageTimestamp;
-      
-                  // Handle null timestamps gracefully
                   if (timestampA == null && timestampB == null) return 0;
-                  if (timestampA == null) return 1; // Nulls go to the end
+                  if (timestampA == null) return 1; 
                   if (timestampB == null) return -1;
       
-                  return timestampB.compareTo(timestampA); // Sort descending
+                  return timestampB.compareTo(timestampA); 
                 });
       
               return _buildChatRoomsList(context, sortedChatRooms);
@@ -50,8 +49,7 @@ class ChatRoomsSection extends StatelessWidget {
             }
           },
         ),
-      ),
-    );
+      );
   }
 
   void _showErrorSnackbar(BuildContext context, String message) {
