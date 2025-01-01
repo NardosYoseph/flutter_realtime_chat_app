@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../data/repositories/auth_repository.dart';
@@ -9,7 +10,7 @@ import '../../data/repositories/auth_repository.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-class AuthBloc extends Bloc<AuthEvent, AuthState> {
+class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   AuthRepository _authRepository;
 
   AuthBloc(this._authRepository) : super(InitialAuthState()) {
@@ -18,7 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
    on<LogoutEvent>((event,emit)=>emit(LoggedOutState()));
     }
 
-    Future<void> _onLogin(LoginEvent event,Emitter<AuthState> emit) async{
+   Future<void> _onLogin(LoginEvent event,Emitter<AuthState> emit) async{
   emit(AuthStateLoading());
   try{
     final user= await _authRepository.login(event.email, event.password);
@@ -41,6 +42,49 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(RegistrationErrorState(errorMessage: "error registering"));
     }
     }
+    
+   @override
+  AuthState? fromJson(Map<String, dynamic> json) {
+    try {
+      final stateType = json['stateType'];
+      switch (stateType) {
+        case 'AuthenticatedState':
+          return AuthenticatedState(
+            json['userId'] as String,
+            json['email'] as String,
+            json['username'] as String,
+          );
+        case 'LoggedOutState':
+          return LoggedOutState();
+        default:
+          return InitialAuthState();
+      }
+    } catch (e) {
+      print("Error deserializing auth state: $e");
+      return null;
+    }
   }
+
+  @override
+  Map<String, dynamic>? toJson(AuthState state) {
+    try {
+      if (state is AuthenticatedState) {
+        return {
+          'stateType': 'AuthenticatedState',
+          'userId': state.userId,
+          'email': state.email,
+          'username': state.username,
+        };
+      } else if (state is LoggedOutState) {
+        return {'stateType': 'LoggedOutState'};
+      }
+      return null;
+    } catch (e) {
+      print("Error serializing auth state: $e");
+      return null;
+    }
+  }
+  }
+
 
 
