@@ -30,8 +30,10 @@ class ChatRoomTile extends StatelessWidget {
     }
 
     final isLastMessageFromCurrentUser = chatRoom.lastMessageSender == currentUserId;
+    print("isLastMessageFromCurrentUser $isLastMessageFromCurrentUser");
     // final isLastMessageRead = chatRoom.lastMessageRead ?? false;
     final hasUnreadMessages = chatRoom.unreadCount != null && chatRoom.unreadCount! > 0;
+    print("hasUnreadMessages $hasUnreadMessages");
 
     return ListTile(
       leading: Container(
@@ -61,6 +63,7 @@ class ChatRoomTile extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           if (isLastMessageFromCurrentUser)
+          
             Icon(
               hasUnreadMessages ? Icons.done : Icons.done_all,
               size: 16,
@@ -75,6 +78,7 @@ class ChatRoomTile extends StatelessWidget {
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),
+            
         ],
       ),
       onTap: () {

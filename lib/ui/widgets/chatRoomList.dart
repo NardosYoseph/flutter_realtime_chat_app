@@ -10,47 +10,37 @@ class ChatRoomsSection extends StatelessWidget {
   const ChatRoomsSection({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return 
-    // RefreshIndicator(
-    //   onRefresh: ()async{
-    //     final authState= context.read<AuthBloc>().state;
-    //     if(authState is AuthenticatedState){
-    //       final userId=authState.userId;
-    //     context.read<ChatBloc>().add(FetchChatRoomsEvent(userId));}
-    //     },
-      // child: 
- Expanded(
-        child: BlocConsumer<ChatBloc, ChatState>(
-        listener: (context, state) {
-            if (state is ChatError) {
-              _showErrorSnackbar(context, state.errorMessage);
-            }
-          },
-          builder: (context, state) {
-            if (state is ChatRoomLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ChatRoomsLoaded) {
-              // Copy and sort the chatRooms to avoid mutating the original list
-              final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
-                ..sort((a, b) {
-                  final timestampA = a.lastMessageTimestamp;
-                  final timestampB = b.lastMessageTimestamp;
-                  if (timestampA == null && timestampB == null) return 0;
-                  if (timestampA == null) return 1; 
-                  if (timestampB == null) return -1;
-      
-                  return timestampB.compareTo(timestampA); 
-                });
-      
-              return _buildChatRoomsList(context, sortedChatRooms);
-            } else {
-              return const Center(child: Text("Unable to load chat rooms."));
-            }
-          },
-        ),
-      );
-  }
+Widget build(BuildContext context) {
+  return Expanded(
+    child: BlocConsumer<ChatBloc, ChatState>(
+      listener: (context, state) {
+        if (state is ChatError) {
+          _showErrorSnackbar(context, state.errorMessage);
+        }
+      },
+      builder: (context, state) {
+        if (state is ChatRoomLoading && state is! ChatRoomsLoaded) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is ChatRoomsLoaded) {
+          final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
+            ..sort((a, b) {
+              final timestampA = a.lastMessageTimestamp;
+              final timestampB = b.lastMessageTimestamp;
+              if (timestampA == null && timestampB == null) return 0;
+              if (timestampA == null) return 1; 
+              if (timestampB == null) return -1;
+              return timestampB.compareTo(timestampA);
+            });
+
+          return _buildChatRoomsList(context, sortedChatRooms);
+        } else {
+          return const Center(child: Text("Unable to load chat rooms."));
+        }
+      },
+    ),
+  );
+}
+
 
   void _showErrorSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));

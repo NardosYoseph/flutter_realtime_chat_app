@@ -8,6 +8,7 @@ import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/repositories/auth_repository.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
 import 'package:real_time_chat_app/data/repositories/user_repository.dart';
+import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,11 +25,12 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     AuthRepository authRepository = AuthRepository();
     ChatRepository chatRepository = ChatRepository();
-    UserRepository userRepository= UserRepository();
+    UserRepository userRepository = UserRepository();
 
     return MultiBlocProvider(
       providers: [
@@ -36,20 +38,35 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthBloc(authRepository),
         ),
         BlocProvider(
-          create: (context) => ChatBloc(chatRepository,userRepository),
-        ) ,
+          create: (context) => ChatBloc(chatRepository, userRepository),
+        ),
         BlocProvider(
-          create: (context) => UserBloc(userRepository,chatRepository),
+          create: (context) => UserBloc(userRepository, chatRepository),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter chat app',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: LoginScreen(),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          // Choose the initial screen based on the auth state
+          Widget initialScreen;
+
+          if (state is AuthenticatedState) {
+            initialScreen = HomePage(); // Replace with your main app screen
+          } else if (state is LoggedOutState) {
+            initialScreen = LoginScreen();
+          } else {
+            initialScreen = LoginScreen(); // Optional loading screen
+          }
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter chat app',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: initialScreen,
+          );
+        },
       ),
     );
   }

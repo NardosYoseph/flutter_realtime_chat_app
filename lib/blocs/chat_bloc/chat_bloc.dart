@@ -210,7 +210,9 @@ Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event, Em
 
 
 Future<void> _onFetchChatRoom(FetchChatRoomsEvent event, Emitter<ChatState> emit) async {
-  emit(ChatRoomLoading()); // Start with a loading state
+  if (state is! ChatRoomsLoaded) {
+    emit(ChatRoomLoading());
+  }
   try {
     await for (final chatRooms in _chatRepository.fetchChatRooms(event.userId)) {
       final updatedChatRooms = await Future.wait(chatRooms.map((chatRoom) async {

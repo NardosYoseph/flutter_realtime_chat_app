@@ -43,48 +43,42 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
     }
     }
     
-   @override
-  AuthState? fromJson(Map<String, dynamic> json) {
-    try {
-      final stateType = json['stateType'];
-      switch (stateType) {
-        case 'AuthenticatedState':
-          return AuthenticatedState(
-            json['userId'] as String,
-            json['email'] as String,
-            json['username'] as String,
-          );
-        case 'LoggedOutState':
-          return LoggedOutState();
-        default:
-          return InitialAuthState();
-      }
-    } catch (e) {
-      print("Error deserializing auth state: $e");
-      return null;
-    }
-  }
-
   @override
-  Map<String, dynamic>? toJson(AuthState state) {
-    try {
-      if (state is AuthenticatedState) {
-        return {
-          'stateType': 'AuthenticatedState',
-          'userId': state.userId,
-          'email': state.email,
-          'username': state.username,
-        };
-      } else if (state is LoggedOutState) {
-        return {'stateType': 'LoggedOutState'};
-      }
-      return null;
-    } catch (e) {
-      print("Error serializing auth state: $e");
-      return null;
+AuthState? fromJson(Map<String, dynamic> json) {
+  try {
+    final stateType = json['stateType'] as String?;
+    if (stateType == 'AuthenticatedState') {
+      return AuthenticatedState(
+        json['userId'] as String,
+        json['email'] as String,
+        json['username'] as String,
+      );
     }
+    return LoggedOutState();
+  } catch (e) {
+    print("Error deserializing AuthState: $e");
+    return null;
   }
+}
+
+@override
+Map<String, dynamic>? toJson(AuthState state) {
+  try {
+    if (state is AuthenticatedState) {
+      return {
+        'stateType': 'AuthenticatedState',
+        'userId': state.userId,
+        'email': state.email,
+        'username': state.username,
+      };
+    }
+    return {'stateType': 'LoggedOutState'};
+  } catch (e) {
+    print("Error serializing AuthState: $e");
+    return null;
   }
+}
+}
 
 
 
