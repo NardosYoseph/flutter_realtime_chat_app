@@ -7,22 +7,25 @@ import '../screens/userSearchScreen.dart';
 import 'chatRoomTile.dart';
 
 class ChatRoomsSection extends StatelessWidget {
-  const ChatRoomsSection({Key? key}) : super(key: key);
-
+   ChatRoomsSection({Key? key}) : super(key: key);
+    
   @override
 Widget build(BuildContext context) {
+  final chatBloc = context.read<ChatBloc>();
+    final authBloc = context.read<AuthBloc>();
   return Expanded(
-    child: BlocConsumer<ChatBloc, ChatState>(
-      listener: (context, state) {
-        if (state is ChatError) {
-          _showErrorSnackbar(context, state.errorMessage);
-        }
-      },
-      builder: (context, state) {
-        if (state is ChatRoomLoading && state is! ChatRoomsLoaded) {
+    child: StreamBuilder<List<ChatRoom>>(
+      stream: chatBloc.chatRoomStream,
+      builder: (context, snapshot) {
+
+        if (snapshot.connectionState ==ConnectionState.waiting && !snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is ChatRoomsLoaded) {
-          final sortedChatRooms = List<ChatRoom>.from(state.chatRooms)
+        } if (snapshot.hasError) {
+  return Center(child: Text("Error loading chatrooms: ${snapshot.error}"));
+}
+
+    final chatRooms = snapshot.data ?? [];
+          final sortedChatRooms = List<ChatRoom>.from(chatRooms)
             ..sort((a, b) {
               final timestampA = a.lastMessageTimestamp;
               final timestampB = b.lastMessageTimestamp;
@@ -33,9 +36,7 @@ Widget build(BuildContext context) {
             });
 
           return _buildChatRoomsList(context, sortedChatRooms);
-        } else {
-          return const Center(child: Text("Unable to load chat rooms."));
-        }
+        
       },
     ),
   );

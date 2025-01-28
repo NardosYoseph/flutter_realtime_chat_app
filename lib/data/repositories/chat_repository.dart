@@ -16,15 +16,45 @@ class ChatRepository {
       throw Exception("Failed to fetch messages: $e");
     }
   }
-  Future<void> sendMessage(String chatRoomId, String senderId, String messageContent) async{
-    try{
-    print("inside send repo");
-
-     final response=await _chatProvider.sendMessage(chatRoomId, senderId, messageContent);
-    }catch(e){
-      print("$e");
+   Future<List<Message>> fetchOlderMessages(String chatRoomId, DateTime lastMessageTimestamp) {
+    print("old messages fetched successfully repository");
+    return _chatProvider.fetchOlderMessages(chatRoomId, lastMessageTimestamp);
+  }
+   Stream<List<ChatRoom>> fetchChatRooms(String userId) {
+    print("Inside fetch chat rooms provider");
+    try {
+return _chatProvider.fetchChatRooms(userId);
+      
+    } catch (e) {
+      print("Fetch chat rooms provider error $e");
+      throw Exception("Failed to fetch chat rooms: $e");
     }
   }
+ Future<void> sendMessage(String chatRoomId, String senderId, String messageContent) async {
+  try {
+    final message = Message(
+      senderId: senderId,
+      content: messageContent,
+      timestamp: DateTime.now(),
+    );
+
+    await _chatProvider.sendMessage(chatRoomId, message);
+    print("Message sent to Firestore successfully");
+  } catch (e) {
+    print("Send message error: $e");
+    throw Exception("Failed to send message: $e");
+  }
+}
+ Future<void> updateChatRoom(String chatRoomId, Map<String, dynamic> updates) async {
+  try {
+ 
+    await _chatProvider.updateChatRoom(chatRoomId, updates);
+    print("chatroom updated successfully");
+  } catch (e) {
+    print("chatroom update error: $e");
+    throw Exception("Failed to chatroom update: $e");
+  }
+}
    Future<void> deleteMessage(String chatRoomId, String messageId) async{
     try{
     print("inside send repo");
@@ -35,25 +65,16 @@ class ChatRepository {
     }
   }
   // Fetch all chat rooms for a specific user
-  Stream<List<ChatRoom>> fetchChatRooms(String userId) {
-    print("Inside fetch chat rooms provider");
-    try {
-return _chatProvider.fetchChatRooms(userId);
-      
-    } catch (e) {
-      print("Fetch chat rooms provider error $e");
-      throw Exception("Failed to fetch chat rooms: $e");
-    }
-  }
-  Future<void> updateChatRoom(String chatRoomId, String lastMessage, String lastMessageSender, DateTime lastMessageTimestamp,int? unreadCount) async{
-    try{
-    print("inside send repo");
+ 
+  // Future<void> updateChatRoom(String chatRoomId, String lastMessage, String lastMessageSender, DateTime lastMessageTimestamp,int? unreadCount) async{
+  //   try{
+  //   print("inside send repo");
 
-     final response=await _chatProvider.updateChatRoom(chatRoomId, lastMessage, lastMessageSender, lastMessageTimestamp,unreadCount);
-    }catch(e){
-      print("$e");
-    }
-  }
+  //    final response=await _chatProvider.updateChatRoom(chatRoomId, lastMessage, lastMessageSender, lastMessageTimestamp,unreadCount);
+  //   }catch(e){
+  //     print("$e");
+  //   }
+  // }
   Future<ChatRoom> createChatRoom(String currentUserId, String otherUserId) async {
     // Generate a consistent chatRoomId using both user IDs
     final chatRoomId = (currentUserId.compareTo(otherUserId) < 0)
@@ -94,11 +115,11 @@ return _chatProvider.fetchChatRooms(userId);
   }
 
   
-   Future<void> markMessageAsRead(String chatRoomId) async{
+   Future<void> markMessageAsRead(String chatRoomId, String currentUserId) async{
     try{
       print("inside markasread repo try");
 
-      final response=await _chatProvider.markMessageAsRead(chatRoomId); 
+      final response=await _chatProvider.markMessagesAsRead(chatRoomId,currentUserId); 
       print("inside markasread repo try success");
 
     }

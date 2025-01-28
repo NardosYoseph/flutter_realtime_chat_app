@@ -50,7 +50,8 @@ class DeleteMessageEvent extends ChatEvent{
 class SendMessageEvent extends ChatEvent {
   final String senderId;
   final String message;
-  SendMessageEvent(this.senderId, this.message);
+  final DateTime timestamp;
+  SendMessageEvent(this.senderId, this.message,this.timestamp);
 
   @override
   List<Object?> get props => [senderId, message];
@@ -68,3 +69,44 @@ class LoadMessagesEvent extends ChatEvent{
   // TODO: implement props
   List<Object?> get props => [];
 }
+class NewMessagesReceived extends ChatEvent {
+  final List<Message> messages;
+  final String chatRoomId;
+  final String otherUsername;
+  final String? lastMessageSender;
+bool hasReachedMax;
+  NewMessagesReceived(this.messages, this.chatRoomId, this.otherUsername, this.lastMessageSender,{this.hasReachedMax=false});
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [messages,chatRoomId,otherUsername,lastMessageSender,hasReachedMax];
+}
+class MessageFetchError extends ChatEvent {
+  final String error;
+
+  MessageFetchError(this.error);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [error];
+}
+class FetchMoreMessagesEvent extends ChatEvent {
+  final String chatRoomId;
+  final DateTime lastMessageTimestamp;
+
+  FetchMoreMessagesEvent(this.chatRoomId, this.lastMessageTimestamp);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [chatRoomId,lastMessageTimestamp];
+}
+
+
+// class ChatLoadingMore extends ChatState {
+//   @override
+//   // TODO: implement props
+//   List<Object?> get props => [];
+// }
+
+
+

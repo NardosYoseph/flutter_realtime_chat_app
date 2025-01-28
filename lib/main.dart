@@ -11,6 +11,7 @@ import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +21,12 @@ Future<void> main() async {
   );
 
   HydratedBloc.storage = storage;
+  await initHiveForFlutter();
   runApp(MyApp());
 }
-
+Future<void> initHiveForFlutter() async {
+  await Hive.initFlutter();
+}
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
