@@ -14,7 +14,7 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         children: [
           Container(
-              decoration: BoxDecoration(color: const Color.fromARGB(255, 170, 18, 107)),
+              
             width:double.infinity ,
             child: DrawerHeader(
                 child: Column(
@@ -32,9 +32,9 @@ class CustomDrawer extends StatelessWidget {
                     if(state is AuthenticatedState){
                     return Column(
                       children: [
-                        Text('@${state.username}',style: TextStyle(color: Colors.white,fontSize: 14),),
+                        Text('@${state.username}',style: TextStyle(fontSize: 14),),
 
-                        Text(state.email,style: TextStyle(color: Colors.white),),
+                        Text(state.email,),
                       ],
                     );}
                       else{

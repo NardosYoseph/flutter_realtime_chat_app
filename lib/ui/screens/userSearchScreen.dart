@@ -23,7 +23,7 @@ class SearchUserScreen extends StatelessWidget {
           children: [
             TextField(
               decoration: InputDecoration(
-                fillColor: Colors.white,
+                // fillColor: Colors.white,
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
               ),

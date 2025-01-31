@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/models/message.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
+import 'package:real_time_chat_app/ui/widgets/chatAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
+import 'package:real_time_chat_app/ui/widgets/messageBuble.dart';
 
 import '../../blocs/auth_bloc/auth_bloc.dart';
 import '../../blocs/chat_bloc/chat_bloc.dart';
@@ -61,28 +63,7 @@ Widget build(BuildContext context) {
   final authBloc = context.read<AuthBloc>();
 
   return Scaffold(
-    appBar: AppBar(
-      title: BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) {
-          if (state is ChatLoaded) {
-            return Row(
-              children: [
-                CircleAvatar(
-                  child: Text(
-                    state.otherUSerName.isNotEmpty
-                        ? state.otherUSerName[0].toUpperCase()
-                        : '?',
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(state.otherUSerName),
-              ],
-            );
-          }
-          return const Text("Chat");
-        },
-      ),
-    ),
+    appBar: ChatAppBar(),
     body: BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
          if (state is ChatLoaded || state is ChatError) {
@@ -132,7 +113,7 @@ Widget build(BuildContext context) {
                       onLongPress: () => _showDeleteDialog(context, chatBloc, message),
                       child: Align(
                         alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: _buildMessageBubble(message, isSentByMe),
+                        child: MessageBuble(message:message, isSentByMe:isSentByMe),
                       ),
                     );
                   },
@@ -178,7 +159,7 @@ Widget build(BuildContext context) {
                       onLongPress: () => _showDeleteDialog(context, chatBloc, message),
                       child: Align(
                         alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: _buildMessageBubble(message, isSentByMe),
+                        child: MessageBuble(message:message, isSentByMe:isSentByMe),
                       ),
                     );
                   },
@@ -205,31 +186,7 @@ Widget build(BuildContext context) {
 }
 
 
-  Widget _buildMessageBubble(Message message, bool isSentByMe) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isSentByMe ? Colors.blue : Colors.grey,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            isSentByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Text(
-            message.content,
-            style: const TextStyle(color: Colors.white),
-          ),
-          const SizedBox(height: 4),
-          
-            _formatTimestamp(message.timestamp),
-            // message.timestamp?.toLocal().toString() ?? '',
-          
-        ],
-      ),
-    );
-  }
+ 
 
   Widget _buildMessageInput(ChatBloc chatBloc, String userId) {
     return Padding(
@@ -285,22 +242,5 @@ Widget build(BuildContext context) {
     );
   }
 
- Widget _formatTimestamp(DateTime? timestamp) {
-  if (timestamp == null) {
-    return const SizedBox(
-      width: 16, // Adjust size as needed
-      height: 16, // Adjust size as needed
-      child: CircularProgressIndicator(
-        strokeWidth: 2, // Adjust stroke width as needed
-      ),
-    );
-  }
-  return Text(
-    DateFormat('hh:mm a').format(timestamp.toLocal()),
-    style: const TextStyle(
-      fontSize: 12, 
-      color: Colors.white, 
-    ),
-  );
-}
+ 
 }

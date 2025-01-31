@@ -1,3 +1,5 @@
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
@@ -6,15 +8,40 @@ import 'package:real_time_chat_app/ui/screens/signup_screen.dart';
 
 import '../widgets/emailTextfield.dart';
 import '../widgets/passwordTextField.dart';
+import '../widgets/teddyControlls.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
+// final FlareControls teddyControls = FlareControls();
+@override
+void initState() {
+  super.initState();
+  passwordFocusNode.addListener(() {
+    teddyControls.coverEyes(passwordFocusNode.hasFocus);
+  });
+}
+@override
+void dispose() {
+  passwordFocusNode.dispose();
+  super.dispose();
+}
+
+final teddyControls = TeddyControls();
+
+final FocusNode passwordFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -22,31 +49,25 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Animated Teddy Bear
-                // Container(
-                //   height: 150,
-                //   child: RiveAnimation.asset(
-                //     'assets/animations/teddy.riv',
-                //     fit: BoxFit.contain,
-                //     animations: ['idle'],
-                //   ),
-                // ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   "Welcome!",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple,
+                    // color: Colors.purple,
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  "Please log in to continue",
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-                SizedBox(height: 20),
-                // Email and Password Fields
+                const SizedBox(height: 10),
+                 const SizedBox(height: 20),
+            SizedBox(
+              height: 300,
+              child: FlareActor(
+                'assets/Teddy.flr',
+                controller: teddyControls,
+                animation: "idle",
+              ),
+            ),
                 EmailTextField(
                   controller: emailController,
                   validator: (value) {
@@ -58,8 +79,11 @@ class LoginScreen extends StatelessWidget {
                     }
                     return null;
                   },
+                  onChanged: (value){
+                    teddyControls.lookAtTextField(value);
+                  },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 PasswordTextField(
                   controller: passwordController,
                   validator: (value) {
@@ -71,16 +95,22 @@ class LoginScreen extends StatelessWidget {
                     }
                     return null;
                   },
+                    focusNode: passwordFocusNode,
+
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is AuthenticatedState) {
+                      teddyControls.play("success");
+                      Future.delayed(const Duration(seconds: 2), () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
+                        MaterialPageRoute(builder: (context) => const HomePage()),
+                      );});
                     } else if (state is AuthenticationErrorState) {
+                      teddyControls.play("fail");
+
                       // Trigger teddy sad animation
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(state.errorMessage)),
@@ -89,18 +119,20 @@ class LoginScreen extends StatelessWidget {
                   },
                   builder: (context, state) {
                     if (state is AuthStateLoading) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
+                        // backgroundColor: Colors.purple,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 40),
                       ),
                       onPressed: () {
+                          teddyControls.play("idle");
+                        
                         final email = emailController.text.trim();
                         final password = passwordController.text.trim();
                         if (email.isNotEmpty && password.isNotEmpty) {
@@ -108,20 +140,21 @@ class LoginScreen extends StatelessWidget {
                                 LoginEvent(email, password),
                               );
                         } else {
+                          teddyControls.play("fail");
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Please fill in all fields')),
+                            const SnackBar(content: Text('Please fill in all fields')),
                           );
                         }
                       },
-                      child: Text('Login', style: TextStyle(fontSize: 16,color: Colors.white)),
+                   child: const Text('Login', style: TextStyle(fontSize: 16)),
                     );
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account?"),
+                    const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
                         Navigator.pushReplacement(
@@ -130,9 +163,9 @@ class LoginScreen extends StatelessWidget {
                               builder: (context) => SignupScreen()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign up",
-                        style: TextStyle(color: Colors.purple),
+                        
                       ),
                     ),
                   ],

@@ -71,7 +71,7 @@ Widget build(BuildContext context) {
               child: Text(
                 "Find friends to start chat.",
                 style: TextStyle(
-                  color: Color.fromARGB(255, 161, 1, 153),
+                  // color: Color.fromARGB(255, 161, 1, 153),
                 ),
               ),
             ),

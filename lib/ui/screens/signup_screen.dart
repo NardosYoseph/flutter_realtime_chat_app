@@ -36,7 +36,7 @@ class SignupScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
-                              color: Colors.purple, // Primary color
+                              // color: Colors.purple, // Primary color
                             ),
                           ),
                         ],
@@ -118,13 +118,13 @@ class SignupScreen extends StatelessWidget {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.purple, // Button with primary color
+                              // backgroundColor: Colors.purple, // Button with primary color
                               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: Text('Signup', style: TextStyle(fontSize: 18, color: Colors.white)),
+                            child: Text('Signup', style: TextStyle(fontSize: 18)),
                           );
                         },
                       ),
@@ -138,7 +138,7 @@ class SignupScreen extends StatelessWidget {
                           TextButton(
                             child: Text(
                               "Already have an account? Login",
-                              style: TextStyle(color: Colors.purple),
+                              // style: TextStyle(color: Colors.purple),
                             ),
                             onPressed: () {
                               Navigator.pushReplacement(
