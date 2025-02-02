@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/data/models/chatRoom.dart';
 import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

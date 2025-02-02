@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/repositories/auth_repository.dart';

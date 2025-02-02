@@ -1,59 +1,22 @@
-part of 'auth_bloc.dart';
+// part of 'auth_bloc.dart';
 
-abstract class AuthState extends Equatable{}
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class InitialAuthState extends AuthState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-}
-class AuthStateLoading extends AuthState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-}
-class RegisterStateLoading extends AuthState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-}
-class AuthenticatedState extends AuthState{
-    String userId;
-    String email;
-    String username;
-    AuthenticatedState(this.userId,this.email,this.username);
-    @override
-    List<Object?> get props => [userId,email,username];
-}
-class Unauthenticated extends AuthState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-}
-class AuthenticationErrorState extends AuthState{
-String errorMessage;
-AuthenticationErrorState(this.errorMessage);
+part 'auth_state.freezed.dart';
 
-  @override
-  // TODO: implement props
-  List<Object?> get props => [errorMessage];
-
-}
-class RegistrationSuccessState extends AuthState {
-  @override
-  List<Object?> get props => [];
-}
-
-class RegistrationErrorState extends AuthState {
-  final String errorMessage;
-
-RegistrationErrorState({required this.errorMessage});
-
-  @override
-  List<Object?> get props => [errorMessage];
-}
-class LoggedOutState extends AuthState{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
+@freezed
+class AuthState with _$AuthState {
+  const factory AuthState.initial() = InitialAuthState;
+  const factory AuthState.loading() = AuthStateLoading;
+  const factory AuthState.registerLoading() = RegisterStateLoading;
+  const factory AuthState.authenticated({
+    required String userId,
+    required String email,
+    required String username,
+  }) = AuthenticatedState;
+  const factory AuthState.unauthenticated() = Unauthenticated;
+  const factory AuthState.authenticationError(String errorMessage) = AuthenticationErrorState;
+  const factory AuthState.registrationSuccess() = RegistrationSuccessState;
+  const factory AuthState.registrationError(String errorMessage) = RegistrationErrorState;
+  const factory AuthState.loggedOut() = LoggedOutState;
 }

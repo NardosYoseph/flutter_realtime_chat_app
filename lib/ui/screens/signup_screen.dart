@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_event.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import '../widgets/emailTextfield.dart';
@@ -28,7 +30,7 @@ class SignupScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // App Header
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
@@ -41,7 +43,7 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       UsernameTextField(
                         controller: usernameController,
@@ -52,7 +54,7 @@ class SignupScreen extends StatelessWidget {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
                       // Email input field
                       EmailTextField(
@@ -67,7 +69,7 @@ class SignupScreen extends StatelessWidget {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
                       // Password input field
                       PasswordTextField(
@@ -82,7 +84,7 @@ class SignupScreen extends StatelessWidget {
                           return null;
                         },
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // Signup Button
                       BlocConsumer<AuthBloc, AuthState>(
@@ -90,7 +92,7 @@ class SignupScreen extends StatelessWidget {
                           if (state is RegistrationSuccessState) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
+                              MaterialPageRoute(builder: (context) => const HomePage()),
                             );
                           } else if (state is RegistrationErrorState) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -100,7 +102,7 @@ class SignupScreen extends StatelessWidget {
                         },
                         builder: (context, state) {
                           if (state is RegisterStateLoading) {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           }
                           return ElevatedButton(
                             onPressed: () {
@@ -109,34 +111,34 @@ class SignupScreen extends StatelessWidget {
                                 final password = passwordController.text.trim();
                                 final username = usernameController.text.trim();
                                 context.read<AuthBloc>().add(
-                                  RegisterEvent(username, email, password),
+                                  RegisterEvent(username:username, email:email, password:password),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Please fill in all fields')),
+                                  const SnackBar(content: Text('Please fill in all fields')),
                                 );
                               }
                             },
                             style: ElevatedButton.styleFrom(
                               // backgroundColor: Colors.purple, // Button with primary color
-                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: Text('Signup', style: TextStyle(fontSize: 18)),
+                            child: const Text('Signup', style: TextStyle(fontSize: 18)),
                           );
                         },
                       ),
 
-                      SizedBox(height: 40),
+                      const SizedBox(height: 40),
 
                       // Switch to Login screen
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            child: Text(
+                            child: const Text(
                               "Already have an account? Login",
                               // style: TextStyle(color: Colors.purple),
                             ),

@@ -2,6 +2,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import 'package:real_time_chat_app/data/models/chatRoom.dart';
 import 'package:real_time_chat_app/ui/screens/chat_screen.dart';

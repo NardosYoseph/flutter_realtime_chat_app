@@ -1,30 +1,18 @@
-part of 'auth_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class AuthEvent extends Equatable{}
-class LoginEvent extends AuthEvent{
-  String email;
-  String password;
-  LoginEvent(this.email, this.password);
-  
-  @override
-  // TODO: implement props
-  List<Object?> get props => [email,password];
-  
+part 'auth_event.freezed.dart';
+
+@freezed
+class AuthEvent with _$AuthEvent{
+ const factory AuthEvent.login({ 
+    required String email,
+    required String password,
+})=LoginEvent;
+const factory AuthEvent.register({
+  required String username,
+    required String email,
+    required String password,
+})=RegisterEvent;
+const factory AuthEvent.logout()=LogoutEvent;
 }
-class RegisterEvent extends AuthEvent{
-  String username;
-  String email;
-  String password;
-RegisterEvent(this.username,this.email,this.password);
 
-  @override
-  // TODO: implement props
-  List<Object?> get props => [username,email,password];
-
-}
-class LogoutEvent extends AuthEvent{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-
-}

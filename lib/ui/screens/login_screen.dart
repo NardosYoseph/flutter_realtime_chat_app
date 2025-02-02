@@ -3,6 +3,8 @@ import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_event.dart';
+import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/signup_screen.dart';
 
@@ -137,7 +139,7 @@ final FocusNode passwordFocusNode = FocusNode();
                         final password = passwordController.text.trim();
                         if (email.isNotEmpty && password.isNotEmpty) {
                           context.read<AuthBloc>().add(
-                                LoginEvent(email, password),
+                                LoginEvent(email:email, password:password),
                               );
                         } else {
                           teddyControls.play("fail");

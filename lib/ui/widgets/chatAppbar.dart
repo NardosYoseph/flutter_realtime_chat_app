@@ -16,24 +16,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       // backgroundColor: Colors.transparent, // Make background transparent for gradient
       elevation: 4, // Subtle shadow
       flexibleSpace: Container(
-        decoration: BoxDecoration(
-          // gradient: LinearGradient(
-          //   colors: [
-          //                      Colors.purple, // Soft blue
-          //               Colors.purple, // Soft blue
-
-          //   ],
-          //   begin: Alignment.topLeft,
-          //   end: Alignment.bottomRight,
-          // ),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.2),
-          //     blurRadius: 10,
-          //     offset: const Offset(0, 4),
-          //   ),
-          // ],
-        ),
+        
       ),
       title: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
@@ -43,7 +26,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 // CircleAvatar with Gradient Border
                 Container(
                   padding: const EdgeInsets.all(2), // Border width
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     
                     shape: BoxShape.circle,
                   ),
@@ -62,7 +45,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 // User Name with Fancy Text
                 Text(
                   state.otherUSerName,
-                  style:  TextStyle(
+                  style:  const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     // shadows: [
@@ -76,7 +59,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             );
           }
-          return Text(
+          return const Text(
             "Chat",
             style: TextStyle(
               fontSize: 20,
