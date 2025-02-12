@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:real_time_chat_app/data/models/message.dart';
 import 'package:real_time_chat_app/data/models/user.dart';
@@ -14,7 +15,7 @@ import '../auth_bloc/auth_bloc.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
   bool _isFetching=false;
   final ChatRepository _chatRepository;
   final UserRepository _userRepository;
@@ -264,31 +265,47 @@ Future<void> _onSelectChatRoomFromSearch(SelectChatRoomFromSearchEvent event, Em
     _chatRoomSubscription?.cancel();
     return super.close();
   }
+  @override
+ChatState? fromJson(Map<String, dynamic> json) {
+  try {
+    if (json.containsKey('chatRooms')) {
+      final chatRooms = (json['chatRooms'] as List)
+    .map((e) => ChatRoom.fromJson(e))
+    .toList();
+
+      return ChatRoomsLoaded(chatRooms);
+    } else if (json.containsKey('messages')) {
+      final messages = (json['messages'] as List)
+          .map((e) => Message.fromJson(e))
+          .toList();
+      return ChatLoaded(
+        messages,
+        json['chatRoomId'] ?? '',
+        json['otherUsername'] ?? '',
+        json['lastMessageSender'] ?? '',
+        hasReachedMax: json['hasReachedMax'] ?? false,
+      );
+    }
+  } catch (e) {
+    print("Error restoring state: $e");
+  }
+  return null;
 }
-// Future<void> _onMarkAsRead(MarkAsReadEvent event, Emitter<ChatState> emit) async {
-//   try {
-//     final chatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
-//       print("markasread get chat room $chatRoom");
 
-//     if (chatRoom == null) {
-//       throw Exception("Chat room not found.");
-//     }
-//           print("sender of the last message ${chatRoom.lastMessageSender}");
-//           print("current user ${event.currentUserId}");
+@override
+Map<String, dynamic>? toJson(ChatState state) {
+  if (state is ChatRoomsLoaded) {
+    return {'chatRooms': state.chatRooms.map((e) => e.toJson()).toList()};
+  } else if (state is ChatLoaded) {
+    return {
+      'messages': state.messages.map((e) => e.toJson()).toList(),
+      'chatRoomId': state.chatRoomId,
+      'otherUsername': state.otherUSerName,
+      'lastMessageSender': state.lastMessageSender,
+      'hasReachedMax': state.hasReachedMax,
+    };
+  }
+  return null;
+}
 
-   
-//           print("current user is NOT the sender of the last message");
-//       await _chatRepository.markMessageAsRead(event.chatRoomId);
-// print("mark as read success");
-//       // Optionally re-fetch the chat room for updated data
-//       final updatedChatRoom = await _chatRepository.getChatRoom(event.chatRoomId);
-
-//       // emit(ChatUpdatedState(updatedChatRoom)); // Update the UI
-    
-//   } catch (e) {
-//     print("Error in mark as read: $e");
-//     emit(ChatError(e.toString())); // Handle errors gracefully
-//   }
-// }
-
-// }
+}

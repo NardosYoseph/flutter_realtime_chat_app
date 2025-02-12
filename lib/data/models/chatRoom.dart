@@ -47,6 +47,32 @@ final int? unreadCount;
       'unreadCount': unreadCount,
     };
   }
+   Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'otherUserName': otherUserName,
+      'participants': participants,
+      'createdAt': createdAt?.toIso8601String(),
+      'lastMessage': lastMessage,
+      'lastMessageTimestamp': lastMessageTimestamp?.toIso8601String(),
+      'lastMessageSender': lastMessageSender,
+      'unreadCount': unreadCount,
+    };
+  }
+
+  // Create ChatRoom from JSON
+  factory ChatRoom.fromJson(Map<String, dynamic> json) {
+    return ChatRoom(
+      id: json['id'],
+      otherUserName: json['otherUserName'],
+      participants: List<String>.from(json['participants'] ?? []),
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      lastMessage: json['lastMessage'],
+      lastMessageTimestamp: json['lastMessageTimestamp'] != null ? DateTime.parse(json['lastMessageTimestamp']) : null,
+      lastMessageSender: json['lastMessageSender'],
+      unreadCount: json['unreadCount'],
+    );
+  }
   String getOtherUserId(String currentUserId) {
     return participants.firstWhere((userId) => userId != currentUserId, orElse: () => "Unknown");
   }

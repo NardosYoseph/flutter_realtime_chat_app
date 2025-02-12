@@ -6,8 +6,10 @@ import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/models/message.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/widgets/chatAppbar.dart';
+import 'package:real_time_chat_app/ui/widgets/chatInpuTextField.dart';
 import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
+import 'package:real_time_chat_app/ui/widgets/deleteMessageDialog.dart';
 import 'package:real_time_chat_app/ui/widgets/messageBuble.dart';
 
 import '../../blocs/auth_bloc/auth_bloc.dart';
@@ -32,7 +34,6 @@ DateTime? timestamp;
   @override
   void initState() {
     super.initState();
-
     _scrollController.addListener(_scrollListener);
   }
 
@@ -111,7 +112,10 @@ Widget build(BuildContext context) {
                     final message = messages[index];
                     final isSentByMe = message.senderId == userId;
                     return GestureDetector(
-                      onLongPress: () => _showDeleteDialog(context, chatBloc, message),
+                      onLongPress: (){showDialog(
+    context: context,
+    builder: (context) => DeleteMessageDialog(message: message),
+  );},
                       child: Align(
                         alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
                         child: MessageBuble(message:message, isSentByMe:isSentByMe),
@@ -121,7 +125,7 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            _buildMessageInput(chatBloc, userId),
+            ChatInputTextField(controller: _controller, userId:userId),
           ],
         );
       }
@@ -157,7 +161,10 @@ Widget build(BuildContext context) {
                     final message = messages[index];
                     final isSentByMe = message.senderId == userId;
                     return GestureDetector(
-                      onLongPress: () => _showDeleteDialog(context, chatBloc, message),
+                      onLongPress: () {showDialog(
+    context: context,
+    builder: (context) => DeleteMessageDialog(message: message),
+  );},
                       child: Align(
                         alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
                         child: MessageBuble(message:message, isSentByMe:isSentByMe),
@@ -167,7 +174,7 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            _buildMessageInput(chatBloc, userId),
+            ChatInputTextField(controller: _controller, userId:userId),
           ],
         );
       }
@@ -185,63 +192,5 @@ Widget build(BuildContext context) {
     ),
   );
 }
-
-
- 
-
-  Widget _buildMessageInput(ChatBloc chatBloc, String userId) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: "Type a message...",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () {
-              final timestamp = DateTime.now();
-              final message = _controller.text.trim();
-              if (message.isNotEmpty) {
-                print("send button tapped");
-                chatBloc.add(SendMessageEvent(userId, message,timestamp));
-                _controller.clear();
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context, ChatBloc chatBloc, Message message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Delete Message"),
-        content: const Text("Are you sure you want to delete this message?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              chatBloc.add(DeleteMessageEvent(message.id));
-              Navigator.pop(context);
-            },
-            child: const Text("Delete"),
-          ),
-        ],
-      ),
-    );
-  }
-
  
 }

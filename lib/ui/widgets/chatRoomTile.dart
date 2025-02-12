@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../blocs/auth_bloc/auth_bloc.dart';
+import '../theme/appColors.dart';
 
 class ChatRoomTile extends StatelessWidget {
   final ChatRoom chatRoom;
@@ -55,21 +56,13 @@ class ChatRoomTile extends StatelessWidget {
             );
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChatScreen()),
+              MaterialPageRoute(builder: (context) => const ChatScreen()),
             );
           }
         },
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            // gradient: LinearGradient(
-            //   colors: [
-            //     Colors.purple.withOpacity(0.1),
-            //     Colors.blue.withOpacity(0.1),
-            //   ],
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomRight,
-            // ),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
@@ -78,46 +71,34 @@ class ChatRoomTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  // gradient: LinearGradient(
-                  //   colors: [
-                  //     Colors.purple,
-                  //     Colors.blue,
-                  //   ],
-                  //   begin: Alignment.topLeft,
-                  //   end: Alignment.bottomRight,
-                  // ),
                   borderRadius: BorderRadius.circular(40),
                 ),
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   radius: 24,
-                  // backgroundColor: Colors.white,
+                 backgroundColor: AppColors.lightPrimary,
                   child: Icon(
                     Icons.person,
                     size: 30,
-                    // color: Colors.purple,
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              // Chat Details
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // User Name
                     Text(
                       chatRoom.otherUserName ?? "",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        // color: Colors.purple,
                       ),
                     ),
                     const SizedBox(height: 4),
                     // Last Message
                     Text(
                       _truncateMessage(chatRoom.lastMessage ?? "Start chat"),
-                      style: TextStyle(
+                      style: const TextStyle(
                         // color: Colors.grey[700],
                         fontSize: 14,
                       ),
@@ -132,13 +113,11 @@ class ChatRoomTile extends StatelessWidget {
                   // Timestamp
                   Text(
                     _formatTimestamp(chatRoom.lastMessageTimestamp),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      // color: Colors.grey[600],
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Unread Message Indicator or Read Status
                   if (isLastMessageFromCurrentUser)
                     Icon(
                       hasUnreadMessages ? Icons.done : Icons.done_all,

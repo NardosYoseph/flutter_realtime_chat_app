@@ -4,14 +4,14 @@ class PasswordTextField extends StatefulWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
-  final FocusNode? focusNode; // Added focus node parameter
+  final FocusNode? focusNode;
 
   const PasswordTextField({
     Key? key,
     required this.controller,
     this.validator,
     this.onChanged,
-    this.focusNode, // Added focus node
+    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -29,26 +29,37 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextFormField(
       controller: widget.controller,
-      focusNode: widget.focusNode, // Assign the focus node
+      focusNode: widget.focusNode,
       obscureText: _isObscured,
       decoration: InputDecoration(
         labelText: 'Password',
         hintText: 'Enter your password',
-        prefixIcon: const Icon(Icons.lock),
+        prefixIcon: Icon(Icons.lock, color: theme.primaryColor),
         suffixIcon: IconButton(
           icon: Icon(
             _isObscured ? Icons.visibility_off : Icons.visibility,
+            color: theme.primaryColor,
           ),
           onPressed: _toggleVisibility,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: theme.primaryColor),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: theme.colorScheme.secondary),
+        ),
+        labelStyle: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        hintStyle: TextStyle(color: theme.hintColor),
       ),
       validator: widget.validator,
       onChanged: widget.onChanged,
+      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
     );
   }
 }

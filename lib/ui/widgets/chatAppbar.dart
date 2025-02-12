@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 
+import '../theme/appColors.dart';
+
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize = const Size.fromHeight(kToolbarHeight);
@@ -31,6 +33,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
+                     backgroundColor: AppColors.lightPrimary,
                     child: Text(
                       state.otherUSerName.isNotEmpty
                           ? state.otherUSerName[0].toUpperCase()
@@ -76,20 +79,20 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
       // Add Icons or Actions
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search,),
-          onPressed: () {
-            // Add search functionality
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.more_vert,),
-          onPressed: () {
-            // Add more options functionality
-          },
-        ),
-      ],
+      // actions: [
+      //   IconButton(
+      //     icon: const Icon(Icons.search,),
+      //     onPressed: () {
+      //       // Add search functionality
+      //     },
+      //   ),
+      //   IconButton(
+      //     icon: const Icon(Icons.more_vert,),
+      //     onPressed: () {
+      //       // Add more options functionality
+      //     },
+      //   ),
+      // ],
     );
   }
 }

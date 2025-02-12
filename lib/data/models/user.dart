@@ -14,7 +14,6 @@ class User with _$User {
   }) = _User;
    factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-
 factory User.fromFirestore(DocumentSnapshot doc){
   final data=doc.data() as Map<String, dynamic>;
   return User(id: doc.id, username: data["username"]??'', email: data["email"]??'', profilePicture: data["profilePicture"]??'');

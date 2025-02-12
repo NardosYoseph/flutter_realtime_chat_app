@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'appColors.dart';
+import 'package:flutter/material.dart';
+import 'appColors.dart';
 
 class AppThemes {
   static final ThemeData lightTheme = ThemeData(
@@ -7,9 +9,10 @@ class AppThemes {
     scaffoldBackgroundColor: AppColors.lightBackground,
     primaryColor: AppColors.lightPrimary,
     colorScheme: ColorScheme.light().copyWith(secondary: AppColors.lightAccent),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppColors.lightText),
-      bodyMedium: TextStyle(color: AppColors.lightText),
+     textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Colors.black),
+      bodyMedium: TextStyle(color: Colors.black87),
+      labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     ),
     appBarTheme: const AppBarTheme(
       color: AppColors.lightPrimary,
@@ -20,6 +23,26 @@ class AppThemes {
         fontWeight: FontWeight.bold,
       ),
     ),
+    drawerTheme: const DrawerThemeData(),
+    
+     elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.pink, // Apply pink to buttons
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    ),
+   inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.pink[50], // Light pink background for inputs
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      labelStyle: TextStyle(color: Colors.pinkAccent),
+    ),
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -27,9 +50,10 @@ class AppThemes {
     scaffoldBackgroundColor: AppColors.darkBackground,
     primaryColor: AppColors.darkPrimary,
     colorScheme: ColorScheme.dark().copyWith(secondary: AppColors.darkAccent),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppColors.darkText),
-      bodyMedium: TextStyle(color: AppColors.darkText),
+     textTheme: const TextTheme(
+      bodyLarge: TextStyle(color: Colors.white),
+      bodyMedium: TextStyle(color: Colors.white70),
+      labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     ),
     appBarTheme: const AppBarTheme(
       color: AppColors.darkPrimary,
@@ -40,7 +64,28 @@ class AppThemes {
         fontWeight: FontWeight.bold,
       ),
     ),
+  drawerTheme: const DrawerThemeData(),
+   elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.pinkAccent,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    ),
+     inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.pink[900], // Dark pink input background
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      labelStyle: TextStyle(color: Colors.pinkAccent),
+    ),
   );
+
+
 
   // Message Bubble Colors
   static Color getSentMessageColor(BuildContext context) {

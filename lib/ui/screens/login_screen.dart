@@ -125,13 +125,15 @@ final FocusNode passwordFocusNode = FocusNode();
                     }
                     return ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        // backgroundColor: Colors.purple,
+                      backgroundColor: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 40),
+                            textStyle: Theme.of(context).textTheme.labelLarge,
                       ),
+                      
                       onPressed: () {
                           teddyControls.play("idle");
                         
