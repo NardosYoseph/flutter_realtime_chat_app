@@ -16,19 +16,15 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   AuthRepository _authRepository;
 
   AuthBloc(this._authRepository) : super(const AuthState.initial()) {
-    on<AuthEvent>((event,emit){
-      event.when(
-        login: (email, password) => _onLogin(email, password, emit),
-    register: (username, email, password) => _onRegister(username, email, password, emit),
-    logout: () => emit(const AuthState.loggedOut()),
-      );
-    });
-    }
+    on<LoginEvent>(_onLogin);
+    on<RegisterEvent>(_onRegister);
+    on<LogoutEvent>((event, emit) => emit(const AuthState.loggedOut()));
+  }
 
-   Future<void> _onLogin(String email, String password,Emitter<AuthState> emit) async{
+   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async{
   emit(const AuthState.loading());
   try{
-    final user= await _authRepository.login(email,password);
+    final user= await _authRepository.login(event.email, event.password);
     emit(AuthState.authenticated( userId: user.id, email: user.email, username: user.username));
   }catch(e){
       print(e);
@@ -36,10 +32,10 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   }
     }
 
-    Future<void> _onRegister(String username,String email, String password,Emitter<AuthState> emit) async{
+    Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async{
     emit(const AuthState.registerLoading());
     try{
-      final user=await _authRepository.register(email, password, username);
+      final user=await _authRepository.register(event.email, event.password, event.username);
       print("in auth bloc");
       emit(const AuthState.registrationSuccess());
        emit(AuthState.authenticated(

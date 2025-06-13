@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:http/http.dart' as http;
 import 'package:real_time_chat_app/data/models/message.dart';
 import 'package:real_time_chat_app/data/models/user.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
@@ -171,6 +173,7 @@ print("inside send message bloc");
     await _chatRepository.sendMessage(
       chatRoomId,
       event.senderId,
+      event.receiverId,
       event.message,
     );
  await _chatRepository.updateChatRoom(chatRoomId, {
@@ -180,14 +183,79 @@ print("inside send message bloc");
       'unreadCount': FieldValue.increment(1),
     });
     print("Message sent successfully");
+// Get chat room participants
+    final chatRoom = await _chatRepository.getChatRoom(chatRoomId);
+    if (chatRoom == null || chatRoom.participants.isEmpty) {
+      print("No participants found in chat room.");
+      return;
+    }
 
-    // Let the real-time stream handle updates to the messages list
+    // Determine recipient (the other participant)
+    String? recipientId;
+    for (var participant in chatRoom.participants) {
+      if (participant != event.senderId) {
+        recipientId = participant;
+        break;
+      }
+    }
+
+    if (recipientId == null) {
+      print("Recipient not found.");
+      return;
+    }
+
+    // Fetch recipient's FCM token
+//     final recipientUser = await _userRepository.fetchUser(recipientId);
+//     final fcmToken = recipientUser.fcmToken;
+// final senderUser = await _userRepository.fetchUser(event.senderId);
+// print("Sender user: ${senderUser.username}");
+//     if (fcmToken != null && fcmToken.isNotEmpty) {
+//       await _sendPushNotification(fcmToken, event.message, senderUser.username);
+//     }
+
   } catch (e) {
     print("Error in send message: $e");
     emit(ChatError("Failed to send message: ${e.toString()}"));
   }
 }
 
+// Future<void> _sendPushNotification(String token, String message, String senderName) async {
+//   try {
+//     const String serverKey = "YOUR_SERVER_KEY"; 
+//     final Uri url = Uri.parse("https://fcm.googleapis.com/fcm/send");
+
+//     final Map<String, dynamic> notificationPayload = {
+//       "to": token,
+//       "notification": {
+//         "title": senderName,
+//         "body": message,
+//         "click_action": "FLUTTER_NOTIFICATION_CLICK",
+//       },
+//       "data": {
+//         "sender": senderName,
+//         "message": message,
+//         "type": "chat",
+//       }
+//     };
+
+//     final response = await http.post(
+//       url,
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization": "key=$serverKey",
+//       },
+//       body: jsonEncode(notificationPayload),
+//     );
+
+//     if (response.statusCode == 200) {
+//       print("Push notification sent successfully");
+//     } else {
+//       print("Failed to send push notification: ${response.body}");
+//     }
+//   } catch (e) {
+//     print("Error sending push notification: $e");
+//   }
+// }
 Future<void> _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
   try {
     print("Inside delete message bloc");

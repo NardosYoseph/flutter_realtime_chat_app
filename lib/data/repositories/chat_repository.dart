@@ -30,10 +30,11 @@ return _chatProvider.fetchChatRooms(userId);
       throw Exception("Failed to fetch chat rooms: $e");
     }
   }
- Future<void> sendMessage(String chatRoomId, String senderId, String messageContent) async {
+ Future<void> sendMessage(String chatRoomId, String senderId,String receiverId, String messageContent) async {
   try {
     final message = Message(
       senderId: senderId,
+      receiverId: receiverId,
       content: messageContent,
       timestamp: DateTime.now(),
     );

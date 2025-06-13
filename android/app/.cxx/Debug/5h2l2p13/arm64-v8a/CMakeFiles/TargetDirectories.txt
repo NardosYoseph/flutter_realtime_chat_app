@@ -1,0 +1,2 @@
+D:/realtime_chat_app/real_time_chat_app/android/app/.cxx/Debug/5h2l2p13/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/realtime_chat_app/real_time_chat_app/android/app/.cxx/Debug/5h2l2p13/arm64-v8a/CMakeFiles/rebuild_cache.dir

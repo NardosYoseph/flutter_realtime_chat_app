@@ -11,6 +11,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return AppBar(
+        backgroundColor: Colors.white, 
+  iconTheme: Theme.of(context).appBarTheme.iconTheme,              
+  titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,   
       title: const Text(
         "Chat App",
         style: TextStyle(fontWeight: FontWeight.bold),

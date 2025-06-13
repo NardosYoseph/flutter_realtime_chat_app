@@ -24,6 +24,7 @@ mixin _$User {
   String get username => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get profilePicture => throw _privateConstructorUsedError;
+  String? get fcmToken => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,7 +40,12 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({String id, String username, String email, String profilePicture});
+  $Res call(
+      {String id,
+      String username,
+      String email,
+      String profilePicture,
+      String? fcmToken});
 }
 
 /// @nodoc
@@ -61,6 +67,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? username = null,
     Object? email = null,
     Object? profilePicture = null,
+    Object? fcmToken = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -79,6 +86,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.profilePicture
           : profilePicture // ignore: cast_nullable_to_non_nullable
               as String,
+      fcmToken: freezed == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -90,7 +101,12 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String username, String email, String profilePicture});
+  $Res call(
+      {String id,
+      String username,
+      String email,
+      String profilePicture,
+      String? fcmToken});
 }
 
 /// @nodoc
@@ -109,6 +125,7 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? username = null,
     Object? email = null,
     Object? profilePicture = null,
+    Object? fcmToken = freezed,
   }) {
     return _then(_$UserImpl(
       id: null == id
@@ -127,6 +144,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.profilePicture
           : profilePicture // ignore: cast_nullable_to_non_nullable
               as String,
+      fcmToken: freezed == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -134,11 +155,22 @@ class __$$UserImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$UserImpl implements _User {
+  @override
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'profilePicture': profilePicture,
+      'fcmToken': fcmToken,
+    };
+  }
   const _$UserImpl(
       {required this.id,
       required this.username,
       required this.email,
-      required this.profilePicture});
+      required this.profilePicture,
+      this.fcmToken});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -151,10 +183,12 @@ class _$UserImpl implements _User {
   final String email;
   @override
   final String profilePicture;
+  @override
+  final String? fcmToken;
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, email: $email, profilePicture: $profilePicture)';
+    return 'User(id: $id, username: $username, email: $email, profilePicture: $profilePicture, fcmToken: $fcmToken)';
   }
 
   @override
@@ -167,13 +201,15 @@ class _$UserImpl implements _User {
                 other.username == username) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.profilePicture, profilePicture) ||
-                other.profilePicture == profilePicture));
+                other.profilePicture == profilePicture) &&
+            (identical(other.fcmToken, fcmToken) ||
+                other.fcmToken == fcmToken));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, username, email, profilePicture);
+      Object.hash(runtimeType, id, username, email, profilePicture, fcmToken);
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -189,12 +225,6 @@ class _$UserImpl implements _User {
       this,
     );
   }
-  
-  @override
-  ToFirestore() {
-    // TODO: implement ToFirestore
-    throw UnimplementedError();
-  }
 }
 
 abstract class _User implements User {
@@ -202,7 +232,8 @@ abstract class _User implements User {
       {required final String id,
       required final String username,
       required final String email,
-      required final String profilePicture}) = _$UserImpl;
+      required final String profilePicture,
+      final String? fcmToken}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -214,6 +245,8 @@ abstract class _User implements User {
   String get email;
   @override
   String get profilePicture;
+  @override
+  String? get fcmToken;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

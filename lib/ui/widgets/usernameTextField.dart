@@ -14,15 +14,23 @@ class UsernameTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'Enter your username',
-        prefixIcon: Icon(Icons.person),
+        prefixIcon: Icon(Icons.person,color: theme.primaryColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: theme.primaryColor),
         ),
+         focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          borderSide: BorderSide(color: theme.colorScheme.secondary),
+        ),
+        labelStyle: TextStyle(color: theme.textTheme.bodyLarge?.color),
+        hintStyle: TextStyle(color: theme.hintColor),
       ),
       validator: validator,
       onChanged: onChanged,

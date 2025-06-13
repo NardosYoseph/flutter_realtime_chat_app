@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthProvider {
   FirebaseAuth _firebaseAuth;
@@ -34,6 +35,13 @@ Future<UserCredential> SignUp(String email, String password, String username) as
         email: email,
         password: password,
       );
+       String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken != null) {
+      // Save the FCM token to Firestore
+      saveFCMToken(userData.user!.uid, fcmToken);
+    }
+
       return userData;
 
   } catch (e) {
@@ -42,15 +50,35 @@ Future<UserCredential> SignUp(String email, String password, String username) as
 }
 
 Future<UserCredential> login(String email, String password) async {
-    try {
-      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      
-      return userCredential;
-    } catch (e) {
-      throw Exception('Failed to log in: $e');
+  try {
+    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    // Get FCM token
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken != null) {
+      // Save the FCM token to Firestore
+      saveFCMToken(userCredential.user!.uid, fcmToken);
     }
+
+    return userCredential;
+  } catch (e) {
+    throw Exception('Failed to log in: $e');
   }
+}
+
+void saveFCMToken(String userId, String fcmToken) {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  _firestore.collection('users').doc(userId).set({
+    'fcmToken': fcmToken,
+  }, SetOptions(merge: true)).then((_) {
+    print("FCM Token updated successfully");
+  }).catchError((error) {
+    print("Error updating FCM Token: $error");
+  });
+}
 }

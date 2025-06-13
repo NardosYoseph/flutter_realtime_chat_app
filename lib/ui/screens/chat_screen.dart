@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
-import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
-import 'package:real_time_chat_app/data/models/message.dart';
-import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/widgets/chatAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/chatInpuTextField.dart';
-import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
-import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
 import 'package:real_time_chat_app/ui/widgets/deleteMessageDialog.dart';
 import 'package:real_time_chat_app/ui/widgets/messageBuble.dart';
 
 import '../../blocs/auth_bloc/auth_bloc.dart';
 import '../../blocs/chat_bloc/chat_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
-import 'package:real_time_chat_app/blocs/auth_bloc/auth_bloc.dart';
-import 'package:real_time_chat_app/data/models/message.dart';
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+final String receiverId;
 
+ ChatScreen({Key? key, required this.receiverId}) : super(key: key);
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -40,9 +30,7 @@ DateTime? timestamp;
   void _scrollListener() {
     // Check if the user is near the top of the list
     if (_scrollController.position.pixels <= _scrollController.position.minScrollExtent + 50) {
-      print('inside scroll top');
-      print('inside scroll top');
-      print('inside scroll top');
+
       final currentState = context.read<ChatBloc>().state;
       if (currentState is ChatLoaded && !_isFetching && !currentState.hasReachedMax) {
         if (currentState.messages.isNotEmpty && !_isFetching) {
@@ -63,8 +51,11 @@ DateTime? timestamp;
 Widget build(BuildContext context) {
   final chatBloc = context.read<ChatBloc>();
   final authBloc = context.read<AuthBloc>();
+          print('chat screen receiverId ${widget.receiverId}');
+          
 
   return Scaffold(
+    backgroundColor: Theme.of(context).primaryColorLight,
     appBar: ChatAppBar(),
     body: BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
@@ -90,7 +81,14 @@ Widget build(BuildContext context) {
 
       if (authState is AuthenticatedState) {
         final userId = authState.userId;
-
+        print('chat screen currentuserId $userId');
+        // String receiverId= '';
+//  for (final message in messages) {
+//       if (message.senderId == userId) {
+//         receiverId = message.receiverId!;
+//         break; // Exit the loop once the receiverId is found
+//       }
+//     }
         return Column(
           children: [
             Expanded(
@@ -111,6 +109,12 @@ Widget build(BuildContext context) {
                     }
                     final message = messages[index];
                     final isSentByMe = message.senderId == userId;
+                    //    if(isSentByMe){
+                    //   receiverId=message.receiverId;
+                    // }
+          print('receiverId ${widget.receiverId}');
+                    print('isSentByMe $isSentByMe');
+
                     return GestureDetector(
                       onLongPress: (){showDialog(
     context: context,
@@ -125,8 +129,9 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            ChatInputTextField(controller: _controller, userId:userId),
-          ],
+          //  if (receiverId != null) 
+          ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
+      ],
         );
       }
       return const Center(child: Text("No messages available"));
@@ -138,7 +143,15 @@ Widget build(BuildContext context) {
 
       if (authState is AuthenticatedState) {
         final userId = authState.userId;
-
+//         String? receiverId;
+//  for (final message in messages) {
+//       if (message.senderId == userId) {
+//         receiverId = message.receiverId;
+//         print('receiverId $receiverId');
+//         print('message senderId ${message.senderId}');
+//         break; // Exit the loop once the receiverId is found
+//       }
+//     }
         return Column(
           children: [
             Expanded(
@@ -160,6 +173,16 @@ Widget build(BuildContext context) {
                     }
                     final message = messages[index];
                     final isSentByMe = message.senderId == userId;
+                    print("message: $message");
+                     print('isSentByMe $isSentByMe');
+                     print('message senderId ${message.senderId}');
+                     print('message receiverId ${message.receiverId}');
+                     print('current userid $userId');
+
+
+                    // if(isSentByMe){
+                    //   receiverId=message.receiverId;
+                    // }
                     return GestureDetector(
                       onLongPress: () {showDialog(
     context: context,
@@ -174,8 +197,9 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            ChatInputTextField(controller: _controller, userId:userId),
-          ],
+            //  if (receiverId != null) 
+          ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
+        ],
         );
       }
       return const Center(child: Text("No messages available"));

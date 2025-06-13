@@ -67,9 +67,10 @@ class SearchUserScreen extends StatelessWidget {
       print("Authenticated User: $currentUserId");
                          context.read<UserBloc>().add(SelectUserEvent(currentUserId, user.id));
                          context.read<ChatBloc>().add(SelectChatRoomFromSearchEvent(currentUserId, user.id));
+                         print("Navigating to chat screen with receiverId: ${user.id}");
                             Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(builder: (context) => ChatScreen(receiverId: user.id,)),
                     );
                                },
                           child: Container(

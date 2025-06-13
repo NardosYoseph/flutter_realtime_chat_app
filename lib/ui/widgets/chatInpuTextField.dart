@@ -5,9 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/chat_bloc/chat_bloc.dart';
 
 class ChatInputTextField extends StatelessWidget {
-  ChatInputTextField({super.key,required this.controller,required this.userId});
+  ChatInputTextField({super.key,required this.controller,required this.userId,required this.receiverId});
   final TextEditingController controller;
   final String userId;
+  final String receiverId;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +33,10 @@ class ChatInputTextField extends StatelessWidget {
               final timestamp = DateTime.now();
               final message = controller.text.trim();
               if (message.isNotEmpty) {
+                print("input receiverId: $receiverId");
+                print("input senderid: $userId");
                 print("send button tapped");
-                chatBloc.add(SendMessageEvent(userId, message,timestamp));
+                chatBloc.add(SendMessageEvent(userId,receiverId, message,timestamp));
                 controller.clear();
               }
             },

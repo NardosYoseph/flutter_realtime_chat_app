@@ -49,12 +49,13 @@ class DeleteMessageEvent extends ChatEvent{
 }
 class SendMessageEvent extends ChatEvent {
   final String senderId;
+  final String receiverId;
   final String message;
   final DateTime timestamp;
-  SendMessageEvent(this.senderId, this.message,this.timestamp);
+  SendMessageEvent(this.senderId,this.receiverId, this.message,this.timestamp);
 
   @override
-  List<Object?> get props => [senderId, message];
+  List<Object?> get props => [senderId,receiverId, message];
 }
 class SelectChatRoomFromSearchEvent extends ChatEvent {
   final String senderId;

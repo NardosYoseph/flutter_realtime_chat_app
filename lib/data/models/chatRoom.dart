@@ -28,9 +28,9 @@ final int? unreadCount;
       id: doc.id,
       otherUserName: data['otherUserName'] as String?,
       participants: List<String>.from(data['participants'] ?? []),
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      createdAt: (data['createdAt'])?.toDate(),
       lastMessage: data['lastMessage'] as String?,
-      lastMessageTimestamp: (data['lastMessageTimestamp'] as Timestamp?)?.toDate(),
+      lastMessageTimestamp: (data['lastMessageTimestamp'] )?.toDate(),
       lastMessageSender: data['lastMessageSender'] as String?,
       unreadCount: data['unreadCount'] as int?,
     );
@@ -74,7 +74,15 @@ final int? unreadCount;
     );
   }
   String getOtherUserId(String currentUserId) {
-    return participants.firstWhere((userId) => userId != currentUserId, orElse: () => "Unknown");
+    print("participants: $participants");
+    String otherUserId=participants.firstWhere((userId) => userId != currentUserId, orElse: () => "Unknown");
+  print("otherUserId: $otherUserId");
+    if (otherUserId == "Unknown") {
+      throw Exception("No other user found in chat room participants.");
+    }
+    // If the other user ID is not found, return a default value or handle the error as needed
+    // For example, you could return an empty string or throw an exception
+  return otherUserId;
   }
 
   ChatRoom copyWith({

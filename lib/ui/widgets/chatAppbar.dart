@@ -15,7 +15,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      // backgroundColor: Colors.transparent, // Make background transparent for gradient
+        backgroundColor: Colors.white,
       elevation: 4, // Subtle shadow
       flexibleSpace: Container(
         

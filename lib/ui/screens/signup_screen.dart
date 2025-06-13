@@ -8,13 +8,32 @@ import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import '../widgets/emailTextfield.dart';
 import '../widgets/passwordTextField.dart';
 import '../widgets/usernameTextField.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import '../widgets/teddyControlls.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController usernameController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();  // Add GlobalKey
 
+  final TextEditingController passwordController = TextEditingController();
+
+  final TextEditingController usernameController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();  
+  // Add GlobalKey
+final teddyControls = TeddyControls();
+final FocusNode passwordFocusNode = FocusNode();
+@override
+void initState() {
+  super.initState();
+  passwordFocusNode.addListener(() {
+    teddyControls.coverEyes(passwordFocusNode.hasFocus);
+  });
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,16 +52,26 @@ class SignupScreen extends StatelessWidget {
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            "Signup",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              // color: Colors.purple, // Primary color
-                            ),
-                          ),
+                          // Text(
+                          //   "Signup",
+                          //   style: TextStyle(
+                          //     fontSize: 30,
+                          //     fontWeight: FontWeight.bold,
+                          //     // color: Colors.purple, // Primary color
+                          //   ),
+                          // ),
                         ],
                       ),
+                      const SizedBox(height: 20),
+
+                                  SizedBox(
+              height: 300,
+              child: FlareActor(
+                'assets/Teddy.flr',
+                controller: teddyControls,
+                animation: "idle",
+              ),
+            ),
                       const SizedBox(height: 20),
 
                       UsernameTextField(
@@ -52,6 +81,9 @@ class SignupScreen extends StatelessWidget {
                             return 'Username is required';
                           }
                           return null;
+                        },
+                        onChanged: (value) {
+                          teddyControls.lookAtTextField(value);
                         },
                       ),
                       const SizedBox(height: 16),
@@ -68,12 +100,16 @@ class SignupScreen extends StatelessWidget {
                           }
                           return null;
                         },
+                       onChanged: (value) {
+                          teddyControls.lookAtTextField(value);
+                        },
                       ),
                       const SizedBox(height: 16),
 
                       // Password input field
                       PasswordTextField(
                         controller: passwordController,
+                      focusNode: passwordFocusNode,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Password is required';
@@ -104,29 +140,32 @@ class SignupScreen extends StatelessWidget {
                           if (state is RegisterStateLoading) {
                             return const CircularProgressIndicator();
                           }
-                          return ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                final email = emailController.text.trim();
-                                final password = passwordController.text.trim();
-                                final username = usernameController.text.trim();
-                                context.read<AuthBloc>().add(
-                                  RegisterEvent(username:username, email:email, password:password),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Please fill in all fields')),
-                                );
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              // backgroundColor: Colors.purple, // Button with primary color
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                          return SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState?.validate() ?? false) {
+                                  final email = emailController.text.trim();
+                                  final password = passwordController.text.trim();
+                                  final username = usernameController.text.trim();
+                                  context.read<AuthBloc>().add(
+                                    RegisterEvent(username:username, email:email, password:password),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please fill in all fields')),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                // backgroundColor: Colors.purple, // Button with primary color
+                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
+                              child: const Text('Signup', style: TextStyle(fontSize: 18)),
                             ),
-                            child: const Text('Signup', style: TextStyle(fontSize: 18)),
                           );
                         },
                       ),
@@ -140,7 +179,7 @@ class SignupScreen extends StatelessWidget {
                           TextButton(
                             child: const Text(
                               "Already have an account? Login",
-                              // style: TextStyle(color: Colors.purple),
+                              style: TextStyle(fontSize: 16),
                             ),
                             onPressed: () {
                               Navigator.pushReplacement(

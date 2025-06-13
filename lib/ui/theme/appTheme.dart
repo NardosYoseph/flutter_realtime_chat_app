@@ -6,19 +6,20 @@ import 'appColors.dart';
 class AppThemes {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: AppColors.lightBackground,
+    scaffoldBackgroundColor: Colors.white,
     primaryColor: AppColors.lightPrimary,
-    colorScheme: ColorScheme.light().copyWith(secondary: AppColors.lightAccent),
+    // colorScheme: const ColorScheme.light().copyWith(secondary: AppColors.lightAccent),
      textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.black),
       bodyMedium: TextStyle(color: Colors.black87),
       labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     ),
-    appBarTheme: const AppBarTheme(
-      color: AppColors.lightPrimary,
-      iconTheme: IconThemeData(color: Colors.white),
+    appBarTheme:  const AppBarTheme(
+      backgroundColor: Colors.white,
+      // color: Colors.white,
+      iconTheme: IconThemeData(color: Colors.black),
       titleTextStyle: TextStyle(
-        color: Colors.white,
+        color: Colors.black,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
@@ -41,7 +42,7 @@ class AppThemes {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      labelStyle: TextStyle(color: Colors.pinkAccent),
+      labelStyle: const TextStyle(color: Colors.pinkAccent),
     ),
   );
 
@@ -49,7 +50,7 @@ class AppThemes {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.darkBackground,
     primaryColor: AppColors.darkPrimary,
-    colorScheme: ColorScheme.dark().copyWith(secondary: AppColors.darkAccent),
+    // colorScheme: const ColorScheme.dark().copyWith(secondary: AppColors.darkAccent),
      textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.white),
       bodyMedium: TextStyle(color: Colors.white70),
@@ -81,7 +82,7 @@ class AppThemes {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      labelStyle: TextStyle(color: Colors.pinkAccent),
+      labelStyle: const TextStyle(color: Colors.pinkAccent),
     ),
   );
 

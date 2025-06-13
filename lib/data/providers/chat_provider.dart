@@ -1,10 +1,19 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:real_time_chat_app/data/models/chatRoom.dart';
+import 'package:http/http.dart' as http;
 import '../models/message.dart';
+import 'package:googleapis_auth/auth_io.dart' as auth;
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 
+import '../models/user.dart';
+import '../repositories/user_repository.dart';
+import 'user_provider.dart';
 class ChatProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   // Fetch messages from a specific chat room
   Stream<List<Message>> fetchMessages(String chatRoomId) {
   print("Inside fetch messages provider (real-time)");
@@ -93,8 +102,35 @@ if (querySnapshot.docs.isEmpty) {
           .collection('chatRooms')
           .doc(chatRoomId)
           .collection('messages')
-          .add(message.toMap());
+          .add(message.toJson());
 
+ DocumentSnapshot userDoc = await _firestore.collection('users').doc(message.receiverId).get();
+  String? receiverFcmToken = userDoc['fcmToken'];
+
+ if (userDoc.exists && userDoc.data() != null) {
+  //fetch user 
+      String? receiverFcmToken = userDoc['fcmToken'];
+      String sendername = "";
+      try {
+    final docSnapshot = await _firestore.collection('users').doc(message.senderId).get();
+
+    if (docSnapshot.exists) {
+     sendername= User.fromFirestore(docSnapshot).username;
+      print("Sender name: $sendername");
+    } else {
+      throw Exception('User not found');
+    }
+  } catch (e) {
+    throw Exception('Error fetching user: $e');
+  }
+      if (receiverFcmToken != null && receiverFcmToken.isNotEmpty) {
+        await sendPushNotification(receiverFcmToken, sendername, message.content);
+      } else {
+        print("Receiver does not have an FCM token");
+      }
+    } else {
+      print("Receiver user document does not exist.");
+    }
       print("Send message provider success");
     } catch (e) {
       print("Send message provider error $e");
@@ -102,6 +138,46 @@ if (querySnapshot.docs.isEmpty) {
     }
   }
 
+
+Future<String> getAccessToken() async {
+  final jsonString = await rootBundle.loadString('assets/real-time-chat-app-a295b-firebase-adminsdk-dvtwv-d2582051b6.json');
+  final jsonKey = jsonDecode(jsonString);
+  final accountCredentials = auth.ServiceAccountCredentials.fromJson(jsonKey);
+  final client = await auth.clientViaServiceAccount(
+    accountCredentials,
+    ['https://www.googleapis.com/auth/firebase.messaging'],
+  );
+
+  return client.credentials.accessToken.data;
+}
+
+Future<void> sendPushNotification(String token, String title, String body) async {
+  print("Sending push notification to token: $token");
+  print("Title: $title");
+  print("Body: $body");
+  final String accessToken = await getAccessToken();
+  final Uri url = Uri.parse("https://fcm.googleapis.com/v1/projects/real-time-chat-app-a295b/messages:send");
+
+  final response = await http.post(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $accessToken",
+    },
+    body: jsonEncode({
+      "message": {
+        "token": token, 
+        "notification": {
+          "title": title,
+          "body": body,
+        },
+      },
+    }),
+  );
+
+  print("Response status: ${response.statusCode}");
+  print("Response body: ${response.body}");
+}
   // Fetch all chat rooms for a specific user
   Stream<List<ChatRoom>> fetchChatRooms(String userId) {
   print("Listening to fetch chat rooms stream");

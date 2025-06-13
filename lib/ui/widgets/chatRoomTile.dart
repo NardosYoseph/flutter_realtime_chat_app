@@ -33,21 +33,25 @@ class ChatRoomTile extends StatelessWidget {
     final authState = authBloc.state;
 
     String? currentUserId;
+    String? receiverId;
     if (authState is AuthenticatedState) {
       currentUserId = authState.userId;
+      receiverId = chatRoom.getOtherUserId(currentUserId);
+      print('tile Receiver ID: $receiverId');
+      print('Current User ID: $currentUserId');
     }
 
     final isLastMessageFromCurrentUser = chatRoom.lastMessageSender == currentUserId;
     final hasUnreadMessages = chatRoom.unreadCount != null && chatRoom.unreadCount! > 0;
 
     return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
+      // elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(15),
+      // ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(15),
+        // borderRadius: BorderRadius.circular(15),
         onTap: () {
           if (authState is AuthenticatedState) {
             final currentUserId = authState.userId;
@@ -56,14 +60,14 @@ class ChatRoomTile extends StatelessWidget {
             );
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ChatScreen()),
+              MaterialPageRoute(builder: (context) => ChatScreen(receiverId: receiverId!,)),
             );
           }
         },
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            // borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
             children: [
@@ -89,6 +93,7 @@ class ChatRoomTile extends StatelessWidget {
                   children: [
                     Text(
                       chatRoom.otherUserName ?? "",
+                      
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -97,7 +102,7 @@ class ChatRoomTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     // Last Message
                     Text(
-                      _truncateMessage(chatRoom.lastMessage ?? "Start chat"),
+                      _truncateMessage(chatRoom.lastMessage ??  "${chatRoom.otherUserName} joined the chat"),
                       style: const TextStyle(
                         // color: Colors.grey[700],
                         fontSize: 14,
@@ -154,7 +159,7 @@ class ChatRoomTile extends StatelessWidget {
 
   String _formatTimestamp(DateTime? timestamp) {
     if (timestamp == null) {
-      return "00:00";
+      return '';
     }
     return DateFormat('hh:mm a').format(timestamp.toLocal());
   }

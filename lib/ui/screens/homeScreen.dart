@@ -4,14 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
-import 'package:real_time_chat_app/data/models/chatRoom.dart';
-import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:real_time_chat_app/ui/widgets/customAppbar.dart';
 import 'package:real_time_chat_app/ui/widgets/customDrawer.dart';
-import 'package:real_time_chat_app/ui/widgets/topFriendsList.dart';
 
 import '../../blocs/auth_bloc/auth_bloc.dart';
-import '../../themeProvider.dart';
 import '../widgets/allChatsHeader.dart';
 import '../widgets/chatRoomList.dart';
 import '../widgets/topFriendsSection.dart';
@@ -60,15 +56,15 @@ final List<Map<String, String>> demoUsers = [
   Widget build(BuildContext context) {
 
     return Scaffold(
-      drawer: CustomDrawer(),
-      appBar: CustomAppBar(),
+      drawer: const CustomDrawer(),
+      appBar: const CustomAppBar(),
       body: Column(
         children: [
           // TopFriendsSection(),
-          AllChatsHeader(),
-          SizedBox(
-            height: 10,
-          ),
+          // const AllChatsHeader(),
+          // const SizedBox(
+          //   height: 10,
+          // ),
           ChatRoomsSection(),
         ],
       ),

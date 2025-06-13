@@ -123,34 +123,37 @@ final FocusNode passwordFocusNode = FocusNode();
                     if (state is AuthStateLoading) {
                       return const CircularProgressIndicator();
                     }
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 40),
+                              textStyle: Theme.of(context).textTheme.labelLarge,
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 40),
-                            textStyle: Theme.of(context).textTheme.labelLarge,
-                      ),
-                      
-                      onPressed: () {
-                          teddyControls.play("idle");
                         
-                        final email = emailController.text.trim();
-                        final password = passwordController.text.trim();
-                        if (email.isNotEmpty && password.isNotEmpty) {
-                          context.read<AuthBloc>().add(
-                                LoginEvent(email:email, password:password),
-                              );
-                        } else {
-                          teddyControls.play("fail");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please fill in all fields')),
-                          );
-                        }
-                      },
-                   child: const Text('Login', style: TextStyle(fontSize: 16)),
+                        onPressed: () {
+                            teddyControls.play("idle");
+                          
+                          final email = emailController.text.trim();
+                          final password = passwordController.text.trim();
+                          if (email.isNotEmpty && password.isNotEmpty) {
+                            context.read<AuthBloc>().add(
+                                  LoginEvent(email:email, password:password),
+                                );
+                          } else {
+                            teddyControls.play("fail");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please fill in all fields')),
+                            );
+                          }
+                        },
+                                         child: const Text('Login', style: TextStyle(fontSize: 16)),
+                      ),
                     );
                   },
                 ),
