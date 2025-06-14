@@ -55,7 +55,6 @@ Widget build(BuildContext context) {
           
 
   return Scaffold(
-    backgroundColor: Theme.of(context).primaryColorLight,
     appBar: ChatAppBar(),
     body: BlocListener<ChatBloc, ChatState>(
       listener: (context, state) {
@@ -82,13 +81,6 @@ Widget build(BuildContext context) {
       if (authState is AuthenticatedState) {
         final userId = authState.userId;
         print('chat screen currentuserId $userId');
-        // String receiverId= '';
-//  for (final message in messages) {
-//       if (message.senderId == userId) {
-//         receiverId = message.receiverId!;
-//         break; // Exit the loop once the receiverId is found
-//       }
-//     }
         return Column(
           children: [
             Expanded(
@@ -109,9 +101,6 @@ Widget build(BuildContext context) {
                     }
                     final message = messages[index];
                     final isSentByMe = message.senderId == userId;
-                    //    if(isSentByMe){
-                    //   receiverId=message.receiverId;
-                    // }
           print('receiverId ${widget.receiverId}');
                     print('isSentByMe $isSentByMe');
 
@@ -129,7 +118,6 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-          //  if (receiverId != null) 
           ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
       ],
         );
@@ -143,15 +131,6 @@ Widget build(BuildContext context) {
 
       if (authState is AuthenticatedState) {
         final userId = authState.userId;
-//         String? receiverId;
-//  for (final message in messages) {
-//       if (message.senderId == userId) {
-//         receiverId = message.receiverId;
-//         print('receiverId $receiverId');
-//         print('message senderId ${message.senderId}');
-//         break; // Exit the loop once the receiverId is found
-//       }
-//     }
         return Column(
           children: [
             Expanded(
@@ -162,10 +141,6 @@ Widget build(BuildContext context) {
                   itemCount: messages.length + (state.hasReachedMax ? 0 : 1),
                   itemBuilder: (context, index) {
                     if (index == messages.length && !state.hasReachedMax) {
-      print('inside message length');
-      print(index==messages.length);
-      print(state.hasReachedMax);
-                     
                       return const Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Center(child: CircularProgressIndicator()),
@@ -179,10 +154,6 @@ Widget build(BuildContext context) {
                      print('message receiverId ${message.receiverId}');
                      print('current userid $userId');
 
-
-                    // if(isSentByMe){
-                    //   receiverId=message.receiverId;
-                    // }
                     return GestureDetector(
                       onLongPress: () {showDialog(
     context: context,
@@ -197,7 +168,6 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            //  if (receiverId != null) 
           ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
         ],
         );

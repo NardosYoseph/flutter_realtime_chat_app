@@ -13,7 +13,7 @@ class ChatInputTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   final chatBloc = context.read<ChatBloc>();
-
+final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -21,14 +21,36 @@ class ChatInputTextField extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
-              decoration: const InputDecoration(
+              style: theme.textTheme.bodyLarge,
+              decoration:  InputDecoration(
                 hintText: "Type a message...",
-                border: OutlineInputBorder(),
+                 hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                ),
+                filled: true,
+                 fillColor: theme.colorScheme.surfaceVariant,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
+                ),
+              contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
+              minLines: 1,
+              maxLines: 3,
+              textCapitalization: TextCapitalization.sentences,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.send),
+          const SizedBox(width: 8),
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: theme.colorScheme.primary,
+            ),
+            child: IconButton(
+            icon: Icon(Icons.send,color: theme.colorScheme.onPrimary),
             onPressed: () {
               final timestamp = DateTime.now();
               final message = controller.text.trim();
@@ -40,7 +62,7 @@ class ChatInputTextField extends StatelessWidget {
                 controller.clear();
               }
             },
-          ),
+          ),)
         ],
       ),
     );

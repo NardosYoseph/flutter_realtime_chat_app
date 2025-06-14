@@ -11,6 +11,7 @@ class ChatRoomsSection extends StatelessWidget {
     
   @override
 Widget build(BuildContext context) {
+  final theme = Theme.of(context);
   final chatBloc = context.read<ChatBloc>();
     final authBloc = context.read<AuthBloc>();
   return Expanded(
@@ -19,9 +20,11 @@ Widget build(BuildContext context) {
       builder: (context, snapshot) {
 
         if (snapshot.connectionState ==ConnectionState.waiting && !snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary,));
         } if (snapshot.hasError) {
-  return Center(child: Text("Error loading chatrooms: ${snapshot.error}"));
+  return Center(child: Text("Error loading chatrooms: ${snapshot.error}", style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),));
 }
 
     final chatRooms = snapshot.data ?? [];
@@ -48,6 +51,7 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildChatRoomsList(BuildContext context, List<ChatRoom> chatRooms) {
+    final theme = Theme.of(context);
     if (chatRooms.isEmpty) {
       return GestureDetector(
         child: Column(
@@ -67,12 +71,12 @@ Widget build(BuildContext context) {
                 );
               },
             ),
-            const Center(
+             Center(
               child: Text(
                 "Find friends to start chat.",
-                style: TextStyle(
-                  // color: Color.fromARGB(255, 161, 1, 153),
-                ),
+                style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+              ),
               ),
             ),
           ],

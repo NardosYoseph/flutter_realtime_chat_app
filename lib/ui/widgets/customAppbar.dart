@@ -9,23 +9,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final theme = Theme.of(context);
 
     return AppBar(
-        backgroundColor: Colors.white, 
-  iconTheme: Theme.of(context).appBarTheme.iconTheme,              
-  titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,   
-      title: const Text(
-        "Chat App",
-        style: TextStyle(fontWeight: FontWeight.bold),
+      titleSpacing: 10,
+      title:  Text(
+          "PingMe",
       ),
-      elevation: 20,
       actions: [
         IconButton(
-          icon: const Icon(Icons.search),
+          icon: Icon(
+            Icons.search,
+          ),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SearchUserScreen()),
+              MaterialPageRoute(builder: (context) => const SearchUserScreen()),
             );
           },
         ),
@@ -33,11 +32,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(
             themeProvider.themeMode == ThemeMode.dark
-                ? Icons.nightlight_round // Moon icon for dark mode
-                : Icons.wb_sunny, // Sun icon for light mode
+                ? Icons.nightlight_round
+                : Icons.wb_sunny, 
           ),
           onPressed: () {
-            themeProvider.toggleTheme(themeProvider.themeMode != ThemeMode.dark);
+            themeProvider
+                .toggleTheme(themeProvider.themeMode != ThemeMode.dark);
           },
         ),
       ],

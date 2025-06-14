@@ -157,14 +157,14 @@ void initState() {
                                   );
                                 }
                               },
-                              style: ElevatedButton.styleFrom(
-                                // backgroundColor: Colors.purple, // Button with primary color
-                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: const Text('Signup', style: TextStyle(fontSize: 18)),
+                              // style: ElevatedButton.styleFrom(
+                              //   // backgroundColor: Colors.purple, // Button with primary color
+                              //   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(12),
+                              //   ),
+                              // ),
+                              child: const Text('Signup', style: TextStyle(fontSize: 16)),
                             ),
                           );
                         },
@@ -176,9 +176,13 @@ void initState() {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          const Text(
+                              "Already have an account? ",
+                              style: TextStyle(fontSize: 16),
+                            ),
                           TextButton(
                             child: const Text(
-                              "Already have an account? Login",
+                              "Login",
                               style: TextStyle(fontSize: 16),
                             ),
                             onPressed: () {

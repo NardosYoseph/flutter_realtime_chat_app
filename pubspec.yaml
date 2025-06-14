@@ -58,6 +58,17 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   googleapis_auth: ^1.6.0
   flare_flutter: ^3.0.2
+  flutter_launcher_icons: ^0.13.1  # Add this line with proper version
+
+# Then at root level (not indented):
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/ic_launcher.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FF0000"
+  adaptive_icon_foreground: "assets/ic_launcher.png"
 
 dev_dependencies:
   flutter_test:

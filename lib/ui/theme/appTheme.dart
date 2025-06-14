@@ -1,116 +1,266 @@
 import 'package:flutter/material.dart';
 import 'appColors.dart';
-import 'package:flutter/material.dart';
-import 'appColors.dart';
 
-class AppThemes {
-  static final ThemeData lightTheme = ThemeData(
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: Colors.white,
-    primaryColor: AppColors.lightPrimary,
-    // colorScheme: const ColorScheme.light().copyWith(secondary: AppColors.lightAccent),
-     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black),
-      bodyMedium: TextStyle(color: Colors.black87),
-      labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    ),
-    appBarTheme:  const AppBarTheme(
-      backgroundColor: Colors.white,
-      // color: Colors.white,
-      iconTheme: IconThemeData(color: Colors.black),
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
+class AppTheme {
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: AppColors.lightColorScheme,
+      appBarTheme: AppBarTheme(
+        // centerTitle: true,
+               elevation: 0,
+        // scrolledUnderElevation: 2,
+        backgroundColor: AppColors.lightColorScheme.primary, // Surface color
+        foregroundColor: AppColors.lightColorScheme.onPrimary, // OnSurface text color
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightColorScheme.onPrimary, // Ensures text contrast
+        ),
+        iconTheme: IconThemeData(
+          color: AppColors.lightColorScheme.onPrimary, // Icons match text
+        ),
+       ),
+      cardTheme: CardTheme(
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: AppColors.lightColorScheme.onPrimary,
+          backgroundColor: AppColors.lightColorScheme.primary,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.lightColorScheme.primary,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.lightColorScheme.primary,
+          side: BorderSide(color: AppColors.lightColorScheme.outline),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppColors.lightColorScheme.outline),
+        ),
+        filled: true,
+        fillColor: AppColors.lightColorScheme.surfaceContainerHighest,
+      ),
+      chipTheme: ChipThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        side: BorderSide.none,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      
     ),
-    drawerTheme: const DrawerThemeData(),
     
-     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.pink, // Apply pink to buttons
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+    );
+
+  }
+
+  static ThemeData get darkTheme {
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: AppColors.darkColorScheme,
+    
+    // Scaffold background (dark gray instead of pure black)
+    scaffoldBackgroundColor: Colors.grey[900], // Dark gray background for better contrast
+    
+    // App Bar
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      backgroundColor: Colors.grey[900],
+      scrolledUnderElevation: 2,
+       titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightColorScheme.onPrimary, // Ensures text contrast
         ),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        iconTheme: IconThemeData(
+          color: AppColors.lightColorScheme.onPrimary, // Icons match text
+        ),
+    ),
+    // Elevated Button Theme
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.darkColorScheme.primary, // Primary color for buttons
+        foregroundColor: AppColors.darkColorScheme.onPrimary, // Text/icon color
+        elevation: 2,
+        shadowColor: Colors.black,
+        minimumSize: const Size(double.infinity, 48), // Full width, 48px height
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Matches your card radius
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        textStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
       ),
     ),
-   inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: Colors.pink[50], // Light pink background for inputs
+    // Cards
+    cardTheme: CardTheme(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      color: Colors.grey[900],
+    ),
+
+    // Input Fields
+    inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-      ),
-      labelStyle: const TextStyle(color: Colors.pinkAccent),
-    ),
-  );
-
-  static final ThemeData darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.darkBackground,
-    primaryColor: AppColors.darkPrimary,
-    // colorScheme: const ColorScheme.dark().copyWith(secondary: AppColors.darkAccent),
-     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Colors.white70),
-      labelLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    ),
-    appBarTheme: const AppBarTheme(
-      color: AppColors.darkPrimary,
-      iconTheme: IconThemeData(color: Colors.black),
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  drawerTheme: const DrawerThemeData(),
-   elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.pinkAccent,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: AppColors.darkColorScheme.outline.withOpacity(0.5),
         ),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      filled: true,
+      fillColor: AppColors.darkColorScheme.surfaceVariant,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    ),
+
+    // Text Theme
+    textTheme: TextTheme(
+      bodyMedium: TextStyle(
+        color: AppColors.darkColorScheme.onSurface.withOpacity(0.9),
+      ),
+      titleMedium: TextStyle(
+        color: AppColors.darkColorScheme.onSurface.withOpacity(0.8),
+      ),
+      labelSmall: TextStyle(
+        color: AppColors.darkColorScheme.onSurface.withOpacity(0.6),
       ),
     ),
-     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: Colors.pink[900], // Dark pink input background
-      border: OutlineInputBorder(
+    // Custom component overrides
+    chipTheme: ChipThemeData(
+      backgroundColor: AppColors.darkColorScheme.surfaceContainerHigh,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      labelStyle: const TextStyle(color: Colors.pinkAccent),
+      side: BorderSide.none,
+      labelPadding: const EdgeInsets.symmetric(horizontal: 12),
     ),
   );
-
-
-
-  // Message Bubble Colors
-  static Color getSentMessageColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? AppColors.sentMessageLight
-        : AppColors.sentMessageDark;
+}
+ static Color _sentMessageLightColor(BuildContext context) {
+    return Theme.of(context).colorScheme.primary;
   }
 
-  static Color getReceivedMessageColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? AppColors.receivedMessageLight
-        : AppColors.receivedMessageDark;
+  static Color _sentMessageDarkColor(BuildContext context) {
+    return Theme.of(context).colorScheme.primaryContainer;
   }
 
-  // Message Text Colors
-  static Color getSentMessageTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? Colors.white // White text for sent messages in light mode
-        : Colors.black; // Black text for sent messages in dark mode
+  static Color _receivedMessageLightColor(BuildContext context) {
+    return Theme.of(context).colorScheme.surfaceContainerHighest;
   }
 
-  static Color getReceivedMessageTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? AppColors.lightText // Dark blue-gray text for received messages in light mode
-        : AppColors.darkText; // Light beige text for received messages in dark mode
+  static Color _receivedMessageDarkColor(BuildContext context) {
+    return Theme.of(context).colorScheme.secondaryContainer;
+  }
+
+  // Message bubble styles
+  static BoxDecoration sentMessageDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.light
+          ? _sentMessageLightColor(context)
+          : _sentMessageDarkColor(context),
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+        bottomLeft: Radius.circular(16),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
+  }
+
+  static BoxDecoration receivedMessageDecoration(BuildContext context) {
+    return BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.light
+          ? _receivedMessageLightColor(context)
+          : _receivedMessageDarkColor(context),
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+        bottomRight: Radius.circular(16),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 2,
+          offset: const Offset(0, 1),
+        ),
+      ],
+    );
+  }
+
+  // Text styles with automatic contrast
+  static TextStyle sentMessageTextStyle(BuildContext context) {
+    final color = Theme.of(context).brightness == Brightness.light
+        ? AppColors.sentMessageTextLight
+        : AppColors.sentMessageTextDark;
+    
+    return Theme.of(context).textTheme.bodyMedium!.copyWith(
+      color: color,
+      fontSize: 16,
+    );
+  }
+
+  static TextStyle receivedMessageTextStyle(BuildContext context) {
+    final color = Theme.of(context).brightness == Brightness.light
+        ? AppColors.receivedMessageTextLight
+        : AppColors.receivedMessageTextDark;
+    
+    return Theme.of(context).textTheme.bodyMedium!.copyWith(
+      color: color,
+      fontSize: 16,
+    );
+  }
+
+  static TextStyle messageTimeStyle(BuildContext context, bool isSent) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = isSent 
+        ? Colors.white.withOpacity(0.6) 
+        : colorScheme.onSurface.withOpacity(0.6);
+    
+    return Theme.of(context).textTheme.labelSmall!.copyWith(
+      color: color,
+      fontSize: 12,
+    );
   }
 }

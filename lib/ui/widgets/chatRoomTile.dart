@@ -5,22 +5,9 @@ import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 
-import 'package:flutter/material.dart';
-import 'package:real_time_chat_app/data/models/chatRoom.dart';
-import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../../blocs/auth_bloc/auth_bloc.dart'; // Import the intl package
-import 'package:flutter/material.dart';
-import 'package:real_time_chat_app/data/models/chatRoom.dart';
-import 'package:real_time_chat_app/ui/screens/chat_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
-import 'package:intl/intl.dart';
-import '../../blocs/auth_bloc/auth_bloc.dart';
-import '../theme/appColors.dart';
+import '../../blocs/auth_bloc/auth_bloc.dart'; 
 
 class ChatRoomTile extends StatelessWidget {
   final ChatRoom chatRoom;
@@ -29,6 +16,7 @@ class ChatRoomTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final theme = Theme.of(context);
     final authBloc = context.read<AuthBloc>();
     final authState = authBloc.state;
 
@@ -45,13 +33,15 @@ class ChatRoomTile extends StatelessWidget {
     final hasUnreadMessages = chatRoom.unreadCount != null && chatRoom.unreadCount! > 0;
 
     return Card(
-      // elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(15),
-      // ),
+        margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+        side: BorderSide(
+          color: theme.colorScheme.outline.withOpacity(0.1),
+          width: 0.5,
+        ),
+      ),
       child: InkWell(
-        // borderRadius: BorderRadius.circular(15),
         onTap: () {
           if (authState is AuthenticatedState) {
             final currentUserId = authState.userId;
@@ -67,23 +57,22 @@ class ChatRoomTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
             children: [
-              // Leading Icon with Gradient Border
               Container(
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(40),
                 ),
-                child: const CircleAvatar(
-                  radius: 24,
-                 backgroundColor: AppColors.lightPrimary,
-                  child: Icon(
-                    Icons.person,
-                    size: 30,
-                  ),
+                child:  CircleAvatar(
+                 radius: 24,
+      backgroundColor: theme.colorScheme.primaryContainer,
+      child: Icon(
+        Icons.person,
+        size: 24,
+        color: theme.colorScheme.onPrimaryContainer,
+      ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -92,53 +81,49 @@ class ChatRoomTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      chatRoom.otherUserName ?? "",
+                      chatRoom.otherUserName ?? "user",
                       
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // Last Message
                     Text(
                       _truncateMessage(chatRoom.lastMessage ??  "${chatRoom.otherUserName} joined the chat"),
-                      style: const TextStyle(
-                        // color: Colors.grey[700],
-                        fontSize: 14,
+                     style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Trailing Timestamp and Icons
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // Timestamp
                   Text(
                     _formatTimestamp(chatRoom.lastMessageTimestamp),
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
+                    style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.5),
+          ),
                   ),
                   const SizedBox(height: 4),
                   if (isLastMessageFromCurrentUser)
                     Icon(
                       hasUnreadMessages ? Icons.done : Icons.done_all,
                       size: 16,
-                      // color: hasUnreadMessages ? Colors.blue : Colors.grey,
+                      color: hasUnreadMessages 
+                ? theme.colorScheme.onSurface.withOpacity(0.5)
+                : theme.colorScheme.primary,
                     )
                   else if (hasUnreadMessages)
                     CircleAvatar(
                       radius: 10,
-                      // backgroundColor: Colors.red,
+                      backgroundColor: theme.colorScheme.primary,
                       child: Text(
                         '${chatRoom.unreadCount}',
-                        style: const TextStyle(
-                          // color: Colors.white,
-                          fontSize: 12,
-                        ),
+                         style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onPrimary,
+              ),
                       ),
                     ),
                 ],

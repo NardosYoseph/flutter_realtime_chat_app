@@ -1,35 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class FormatTimestamp extends StatelessWidget {
-
-DateTime? timestamp;
-  FormatTimestamp({
-    Key? key,
+  final DateTime? timestamp;
+  final TextStyle? style;
+  
+  const FormatTimestamp({
+    super.key,
     this.timestamp,
-  }) : super(key: key);
+    this.style,
+  });
+
   @override
   Widget build(BuildContext context) {
-  
-  if (timestamp == null) {
-    return const SizedBox(
-      width: 16, // Adjust size as needed
-      height: 16, // Adjust size as needed
-      child: CircularProgressIndicator(
-        strokeWidth: 2, // Adjust stroke width as needed
+    if (timestamp == null) {
+      return SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: style?.color?.withOpacity(0.5),
+        ),
+      );
+    }
+    
+    return Text(
+      DateFormat('hh:mm a').format(timestamp!.toLocal()),
+      style: style ?? TextStyle(
+        fontSize: 12,
+        color: Theme.of(context).textTheme.labelSmall?.color,
       ),
     );
-  }
-  return Text(
-    DateFormat('hh:mm a').format(timestamp!.toLocal()),
-    style:  TextStyle(
-      fontSize: 12, 
-    //  color: Colors.white.withOpacity(0.7),
-              
-    ),
-  );
-
   }
 }

@@ -60,11 +60,6 @@ final List<Map<String, String>> demoUsers = [
       appBar: const CustomAppBar(),
       body: Column(
         children: [
-          // TopFriendsSection(),
-          // const AllChatsHeader(),
-          // const SizedBox(
-          //   height: 10,
-          // ),
           ChatRoomsSection(),
         ],
       ),

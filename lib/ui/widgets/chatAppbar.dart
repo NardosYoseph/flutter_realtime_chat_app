@@ -13,19 +13,19 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+     final theme = Theme.of(context); 
     return AppBar(
       automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-      elevation: 4, // Subtle shadow
       flexibleSpace: Container(
         
       ),
+      titleSpacing: 10,
+
       title: BlocBuilder<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatLoaded) {
             return Row(
               children: [
-                // CircleAvatar with Gradient Border
                 Container(
                   padding: const EdgeInsets.all(2), // Border width
                   decoration: const BoxDecoration(
@@ -33,66 +33,37 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                     shape: BoxShape.circle,
                   ),
                   child: CircleAvatar(
-                     backgroundColor: AppColors.lightPrimary,
                     child: Text(
                       state.otherUSerName.isNotEmpty
                           ? state.otherUSerName[0].toUpperCase()
                           : '?',
-                      style: const TextStyle( // Dark blue-gray
-                        fontWeight: FontWeight.bold,
-                      ),
+          //             style: theme.textTheme.titleLarge?.copyWith(
+          //   fontWeight: FontWeight.bold,
+          //   color: theme.colorScheme.primary,
+          // ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                // User Name with Fancy Text
                 Text(
                   state.otherUSerName,
-                  style:  const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    // shadows: [
-                    //   Shadow(
-                    //     blurRadius: 4,
-                    //     offset: Offset(1, 1),
-                    //   ),
-                    // ],
-                  ),
+          //      style: theme.textTheme.titleLarge?.copyWith(
+          //   fontWeight: FontWeight.bold,
+          //   color: theme.colorScheme.onSecondary,
+          // ),
                 ),
               ],
             );
           }
-          return const Text(
-            "Chat",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              // shadows: [
-              //   Shadow(
-              //     color: Colors.black.withOpacity(0.3),
-              //     blurRadius: 4,
-              //     offset: Offset(1, 1),
-              //   ),
-              // ],
-            ),
+          return  Text(
+            "PingMe",
+          //  style: theme.textTheme.titleLarge?.copyWith(
+          //   fontWeight: FontWeight.bold,
+          //   color: theme.colorScheme.onSecondary,
+          // ),
           );
         },
       ),
-      // Add Icons or Actions
-      // actions: [
-      //   IconButton(
-      //     icon: const Icon(Icons.search,),
-      //     onPressed: () {
-      //       // Add search functionality
-      //     },
-      //   ),
-      //   IconButton(
-      //     icon: const Icon(Icons.more_vert,),
-      //     onPressed: () {
-      //       // Add more options functionality
-      //     },
-      //   ),
-      // ],
     );
   }
 }
