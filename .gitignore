@@ -1,3 +1,6 @@
+# Ignore Firebase service account credentials
+assets/real-time-chat-app-a295b-firebase-adminsdk-dvtwv-d2582051b6.json
+
 # Miscellaneous
 *.class
 *.log
