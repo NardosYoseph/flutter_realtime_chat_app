@@ -59,6 +59,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   flare_flutter: ^3.0.2
   flutter_launcher_icons: ^0.13.1  # Add this line with proper version
+  connectivity_plus: ^6.1.4
 
 # Then at root level (not indented):
 flutter_launcher_icons:

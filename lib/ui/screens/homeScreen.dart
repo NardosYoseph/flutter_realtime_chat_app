@@ -55,13 +55,15 @@ final List<Map<String, String>> demoUsers = [
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      drawer: const CustomDrawer(),
-      appBar: const CustomAppBar(),
-      body: Column(
-        children: [
-          ChatRoomsSection(),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        drawer: const CustomDrawer(),
+        appBar: const CustomAppBar(),
+        body: Column(
+          children: [
+            ChatRoomsSection(),
+          ],
+        ),
       ),
     );
   }

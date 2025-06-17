@@ -204,58 +204,12 @@ print("inside send message bloc");
       return;
     }
 
-    // Fetch recipient's FCM token
-//     final recipientUser = await _userRepository.fetchUser(recipientId);
-//     final fcmToken = recipientUser.fcmToken;
-// final senderUser = await _userRepository.fetchUser(event.senderId);
-// print("Sender user: ${senderUser.username}");
-//     if (fcmToken != null && fcmToken.isNotEmpty) {
-//       await _sendPushNotification(fcmToken, event.message, senderUser.username);
-//     }
-
   } catch (e) {
     print("Error in send message: $e");
     emit(ChatError("Failed to send message: ${e.toString()}"));
   }
 }
 
-// Future<void> _sendPushNotification(String token, String message, String senderName) async {
-//   try {
-//     const String serverKey = "YOUR_SERVER_KEY"; 
-//     final Uri url = Uri.parse("https://fcm.googleapis.com/fcm/send");
-
-//     final Map<String, dynamic> notificationPayload = {
-//       "to": token,
-//       "notification": {
-//         "title": senderName,
-//         "body": message,
-//         "click_action": "FLUTTER_NOTIFICATION_CLICK",
-//       },
-//       "data": {
-//         "sender": senderName,
-//         "message": message,
-//         "type": "chat",
-//       }
-//     };
-
-//     final response = await http.post(
-//       url,
-//       headers: {
-//         "Content-Type": "application/json",
-//         "Authorization": "key=$serverKey",
-//       },
-//       body: jsonEncode(notificationPayload),
-//     );
-
-//     if (response.statusCode == 200) {
-//       print("Push notification sent successfully");
-//     } else {
-//       print("Failed to send push notification: ${response.body}");
-//     }
-//   } catch (e) {
-//     print("Error sending push notification: $e");
-//   }
-// }
 Future<void> _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
   try {
     print("Inside delete message bloc");

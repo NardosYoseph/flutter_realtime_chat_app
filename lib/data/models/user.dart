@@ -12,7 +12,7 @@ class User with _$User {
     required String username,
     required String email,
     required String profilePicture,
-    String? fcmToken, // Optional FCM token for future notifications
+    String? fcmToken, 
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

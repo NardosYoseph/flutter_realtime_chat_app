@@ -3,9 +3,27 @@ import 'package:provider/provider.dart';
 import '../../themeProvider.dart';
 import 'package:real_time_chat_app/ui/screens/userSearchScreen.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+import '../../util/connectivity_service.dart';
+
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+  
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  late Stream<NetworkStatus> networkStatusStream;
+
+    @override
+  void initState() {
+    super.initState();
+     networkStatusStream = NetworkStatusService().status;
+  }
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -13,9 +31,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       titleSpacing: 10,
-      title:  Text(
-          "PingMe",
-      ),
+      title: StreamBuilder<NetworkStatus>(
+          stream: networkStatusStream,
+          builder: (context, snapshot) {
+            final isOffline = snapshot.data == NetworkStatus.offline;
+            return Text(
+              isOffline ? 'Connecting...' : 'PingMe',
+            );
+          },
+        ),
+   
       actions: [
         IconButton(
           icon: Icon(
@@ -44,6 +69,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

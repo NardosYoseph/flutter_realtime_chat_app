@@ -56,11 +56,17 @@ class ChatRoomsLoaded extends ChatState {
   final List<ChatRoom> chatRooms;
 
   ChatRoomsLoaded(this.chatRooms);
-  
-  @override
-  // TODO: implement props
   List<Object?> get props => [chatRooms];
-}
+
+  Map<String, dynamic> toJson() => {
+    'chatRooms': chatRooms.map((c) => c.toJson()).toList(),
+  };
+    static ChatRoomsLoaded fromJson(Map<String, dynamic> json) {
+    final chatRooms = (json['chatRooms'] as List<dynamic>)
+        .map((e) => ChatRoom.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return ChatRoomsLoaded(chatRooms);
+  }}
 
 class ChatRoomError extends ChatState{
  final String errorMessage;

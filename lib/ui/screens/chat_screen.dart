@@ -54,134 +54,137 @@ Widget build(BuildContext context) {
           print('chat screen receiverId ${widget.receiverId}');
           
 
-  return Scaffold(
-    appBar: ChatAppBar(),
-    body: BlocListener<ChatBloc, ChatState>(
-      listener: (context, state) {
-         if (state is ChatLoaded || state is ChatError) {
-        _isFetching = false; // Reset fetching flag
+  return SafeArea(
+    child: Scaffold(
+      appBar: ChatAppBar(),
+      body: BlocListener<ChatBloc, ChatState>(
+        listener: (context, state) {
+           if (state is ChatLoaded || state is ChatError) {
+          _isFetching = false; // Reset fetching flag
+        }
+          if (state is ChatError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Error: ${state.errorMessage}")),
+            );
+          }
+        },
+        child: BlocBuilder<ChatBloc, ChatState>(
+    builder: (context, state) {
+      if (state is ChatLoading) {
+        return const Center(child: CircularProgressIndicator());
       }
-        if (state is ChatError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Error: ${state.errorMessage}")),
+    
+      if (state is ChatLoadingMore) {
+        // Show existing messages with a loading indicator at the top
+        final messages = state.messages;
+        final authState = authBloc.state;
+    
+        if (authState is AuthenticatedState) {
+          final userId = authState.userId;
+          print('chat screen currentuserId $userId');
+          return Column(
+            children: [
+              Expanded(
+                child: Scrollbar(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                     itemCount: messages.length + (state.hasReachedMax ? 0 : 1), // Add 1 for loading indicator
+                    itemBuilder: (context, index) {
+                      if (index == messages.length && !state.hasReachedMax ) {
+                           print('*********************inside loading more message');
+        print(index==messages.length);
+        print(state.hasReachedMax);
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      final message = messages[index];
+                      final isSentByMe = message.senderId == userId;
+            print('receiverId ${widget.receiverId}');
+                      print('isSentByMe $isSentByMe');
+    
+                      return GestureDetector(
+                        onLongPress: (){showDialog(
+      context: context,
+      builder: (context) => DeleteMessageDialog(message: message),
+    );},
+                        child: Align(
+                          alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+                          child: MessageBuble(message:message, isSentByMe:isSentByMe),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
+        ],
           );
         }
-      },
-      child: BlocBuilder<ChatBloc, ChatState>(
-  builder: (context, state) {
-    if (state is ChatLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state is ChatLoadingMore) {
-      // Show existing messages with a loading indicator at the top
-      final messages = state.messages;
-      final authState = authBloc.state;
-
-      if (authState is AuthenticatedState) {
-        final userId = authState.userId;
-        print('chat screen currentuserId $userId');
-        return Column(
-          children: [
-            Expanded(
-              child: Scrollbar(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                   itemCount: messages.length + (state.hasReachedMax ? 0 : 1), // Add 1 for loading indicator
-                  itemBuilder: (context, index) {
-                    if (index == messages.length && !state.hasReachedMax ) {
-                         print('inside loading more message');
-      print(index==messages.length);
-      print(state.hasReachedMax);
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(child: CircularProgressIndicator()),
+        return const Center(child: Text("No messages available"));
+      }
+    
+      if (state is ChatLoaded) {
+        final messages = state.messages;
+        final authState = authBloc.state;
+    
+        if (authState is AuthenticatedState) {
+          final userId = authState.userId;
+          return Column(
+            children: [
+              Expanded(
+                child: Scrollbar(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                    itemCount: messages.length + (state.hasReachedMax ? 0 : 1),
+                    itemBuilder: (context, index) {
+                      if (index == messages.length && !state.hasReachedMax) {
+                        print("***************************loading more messages");
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          // child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      final message = messages[index];
+                      final isSentByMe = message.senderId == userId;
+                      print("message: $message");
+                       print('isSentByMe $isSentByMe');
+                       print('message senderId ${message.senderId}');
+                       print('message receiverId ${message.receiverId}');
+                       print('current userid $userId');
+    
+                      return GestureDetector(
+                        onLongPress: () {showDialog(
+      context: context,
+      builder: (context) => DeleteMessageDialog(message: message),
+    );},
+                        child: Align(
+                          alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+                          child: MessageBuble(message:message, isSentByMe:isSentByMe),
+                        ),
                       );
-                    }
-                    final message = messages[index];
-                    final isSentByMe = message.senderId == userId;
-          print('receiverId ${widget.receiverId}');
-                    print('isSentByMe $isSentByMe');
-
-                    return GestureDetector(
-                      onLongPress: (){showDialog(
-    context: context,
-    builder: (context) => DeleteMessageDialog(message: message),
-  );},
-                      child: Align(
-                        alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: MessageBuble(message:message, isSentByMe:isSentByMe),
-                      ),
-                    );
-                  },
+                    },
+                  ),
                 ),
               ),
-            ),
-          ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
-      ],
-        );
+            ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
+          ],
+          );
+        }
+        return const Center(child: Text("No messages available"));
       }
-      return const Center(child: Text("No messages available"));
-    }
-
-    if (state is ChatLoaded) {
-      final messages = state.messages;
-      final authState = authBloc.state;
-
-      if (authState is AuthenticatedState) {
-        final userId = authState.userId;
-        return Column(
-          children: [
-            Expanded(
-              child: Scrollbar(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  itemCount: messages.length + (state.hasReachedMax ? 0 : 1),
-                  itemBuilder: (context, index) {
-                    if (index == messages.length && !state.hasReachedMax) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
-                    final message = messages[index];
-                    final isSentByMe = message.senderId == userId;
-                    print("message: $message");
-                     print('isSentByMe $isSentByMe');
-                     print('message senderId ${message.senderId}');
-                     print('message receiverId ${message.receiverId}');
-                     print('current userid $userId');
-
-                    return GestureDetector(
-                      onLongPress: () {showDialog(
-    context: context,
-    builder: (context) => DeleteMessageDialog(message: message),
-  );},
-                      child: Align(
-                        alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: MessageBuble(message:message, isSentByMe:isSentByMe),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ChatInputTextField(controller: _controller, userId: userId, receiverId: widget.receiverId),
-        ],
-        );
+    
+      if (state is ChatError) {
+        return Center(child: Text(state.errorMessage));
       }
+    
       return const Center(child: Text("No messages available"));
-    }
-
-    if (state is ChatError) {
-      return Center(child: Text(state.errorMessage));
-    }
-
-    return const Center(child: Text("No messages available"));
-  },
-
+    },
+    
+        ),
       ),
     ),
   );
