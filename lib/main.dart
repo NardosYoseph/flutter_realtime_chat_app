@@ -11,11 +11,13 @@ import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 import 'package:real_time_chat_app/blocs/user_bloc/user_bloc.dart';
 import 'package:real_time_chat_app/data/repositories/auth_repository.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
+import 'package:real_time_chat_app/data/repositories/presence_repository.dart';
 import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 import 'package:real_time_chat_app/ui/screens/homeScreen.dart';
 import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'blocs/presence/presence_bloc.dart';
 import 'firebase/notification_service.dart';
 import 'themeProvider.dart';
 import 'ui/theme/appColors.dart';
@@ -66,6 +68,7 @@ class _MyAppState extends State<MyApp> {
     AuthRepository authRepository = AuthRepository();
     ChatRepository chatRepository = ChatRepository();
     UserRepository userRepository = UserRepository();
+    PresenceRepository presenceRepository = PresenceRepository();
 
     final client = ValueNotifier(
       GraphQLClient(
@@ -82,7 +85,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) => AuthBloc(authRepository),
           ),
           BlocProvider(
-            create: (context) => ChatBloc(chatRepository, userRepository),
+            create: (context) => ChatBloc(chatRepository, userRepository,presenceRepository),
           ),
           BlocProvider(
             create: (context) => UserBloc(userRepository, chatRepository),

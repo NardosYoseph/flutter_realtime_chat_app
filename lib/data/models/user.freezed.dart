@@ -25,6 +25,10 @@ mixin _$User {
   String get email => throw _privateConstructorUsedError;
   String get profilePicture => throw _privateConstructorUsedError;
   String? get fcmToken => throw _privateConstructorUsedError;
+  bool get isOnline => throw _privateConstructorUsedError;
+  bool get isTyping => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+  DateTime? get lastSeen => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -45,7 +49,11 @@ abstract class $UserCopyWith<$Res> {
       String username,
       String email,
       String profilePicture,
-      String? fcmToken});
+      String? fcmToken,
+      bool isOnline,
+      bool isTyping,
+      @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+      DateTime? lastSeen});
 }
 
 /// @nodoc
@@ -68,6 +76,9 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? email = null,
     Object? profilePicture = null,
     Object? fcmToken = freezed,
+    Object? isOnline = null,
+    Object? isTyping = null,
+    Object? lastSeen = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -90,6 +101,18 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      isOnline: null == isOnline
+          ? _value.isOnline
+          : isOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isTyping: null == isTyping
+          ? _value.isTyping
+          : isTyping // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastSeen: freezed == lastSeen
+          ? _value.lastSeen
+          : lastSeen // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -106,7 +129,11 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       String username,
       String email,
       String profilePicture,
-      String? fcmToken});
+      String? fcmToken,
+      bool isOnline,
+      bool isTyping,
+      @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+      DateTime? lastSeen});
 }
 
 /// @nodoc
@@ -126,6 +153,9 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? email = null,
     Object? profilePicture = null,
     Object? fcmToken = freezed,
+    Object? isOnline = null,
+    Object? isTyping = null,
+    Object? lastSeen = freezed,
   }) {
     return _then(_$UserImpl(
       id: null == id
@@ -148,6 +178,18 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.fcmToken
           : fcmToken // ignore: cast_nullable_to_non_nullable
               as String?,
+      isOnline: null == isOnline
+          ? _value.isOnline
+          : isOnline // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isTyping: null == isTyping
+          ? _value.isTyping
+          : isTyping // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastSeen: freezed == lastSeen
+          ? _value.lastSeen
+          : lastSeen // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -155,22 +197,16 @@ class __$$UserImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$UserImpl implements _User {
-  @override
-  Map<String, dynamic> toFirestore() {
-    return {
-      'id': id,
-      'username': username,
-      'email': email,
-      'profilePicture': profilePicture,
-      'fcmToken': fcmToken,
-    };
-  }
   const _$UserImpl(
       {required this.id,
       required this.username,
       required this.email,
       required this.profilePicture,
-      this.fcmToken});
+      this.fcmToken,
+      this.isOnline = false,
+      this.isTyping = false,
+      @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+      this.lastSeen});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -185,10 +221,19 @@ class _$UserImpl implements _User {
   final String profilePicture;
   @override
   final String? fcmToken;
+  @override
+  @JsonKey()
+  final bool isOnline;
+  @override
+  @JsonKey()
+  final bool isTyping;
+  @override
+  @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+  final DateTime? lastSeen;
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, email: $email, profilePicture: $profilePicture, fcmToken: $fcmToken)';
+    return 'User(id: $id, username: $username, email: $email, profilePicture: $profilePicture, fcmToken: $fcmToken, isOnline: $isOnline, isTyping: $isTyping, lastSeen: $lastSeen)';
   }
 
   @override
@@ -203,13 +248,19 @@ class _$UserImpl implements _User {
             (identical(other.profilePicture, profilePicture) ||
                 other.profilePicture == profilePicture) &&
             (identical(other.fcmToken, fcmToken) ||
-                other.fcmToken == fcmToken));
+                other.fcmToken == fcmToken) &&
+            (identical(other.isOnline, isOnline) ||
+                other.isOnline == isOnline) &&
+            (identical(other.isTyping, isTyping) ||
+                other.isTyping == isTyping) &&
+            (identical(other.lastSeen, lastSeen) ||
+                other.lastSeen == lastSeen));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, username, email, profilePicture, fcmToken);
+  int get hashCode => Object.hash(runtimeType, id, username, email,
+      profilePicture, fcmToken, isOnline, isTyping, lastSeen);
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -225,6 +276,12 @@ class _$UserImpl implements _User {
       this,
     );
   }
+  
+  @override
+  Map<String, dynamic> toFirestore() {
+    // TODO: implement toFirestore
+    throw UnimplementedError();
+  }
 }
 
 abstract class _User implements User {
@@ -233,7 +290,11 @@ abstract class _User implements User {
       required final String username,
       required final String email,
       required final String profilePicture,
-      final String? fcmToken}) = _$UserImpl;
+      final String? fcmToken,
+      final bool isOnline,
+      final bool isTyping,
+      @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+      final DateTime? lastSeen}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -247,6 +308,13 @@ abstract class _User implements User {
   String get profilePicture;
   @override
   String? get fcmToken;
+  @override
+  bool get isOnline;
+  @override
+  bool get isTyping;
+  @override
+  @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+  DateTime? get lastSeen;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

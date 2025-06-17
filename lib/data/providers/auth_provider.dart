@@ -55,7 +55,7 @@ Future<UserCredential> login(String email, String password) async {
       email: email,
       password: password,
     );
-
+await updateOnlineStatus(userCredential.user!.uid, true);
     // Get FCM token
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
@@ -69,7 +69,28 @@ Future<UserCredential> login(String email, String password) async {
     throw Exception('Failed to log in: $e');
   }
 }
+  Future<void> logout() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null) {
+      await updateOnlineStatus(user.uid, false);
+      await _firebaseAuth.signOut();
+    }
+  }
+   Future<void> updateOnlineStatus(String userId, bool isOnline) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+    await _firestore.collection('users').doc(userId).set({
+      'isOnline': isOnline,
+      'lastSeen': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+   Future<void> updateTypingStatus(String userId, bool isTyping) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    await _firestore.collection('users').doc(userId).set({
+      'isTyping': isTyping,
+    }, SetOptions(merge: true));
+  }
 void saveFCMToken(String userId, String fcmToken) {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

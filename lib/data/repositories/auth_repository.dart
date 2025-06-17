@@ -47,4 +47,13 @@ class AuthRepository {
       throw Exception('Error registering user: $e');
     }
   }
+
+  Future<void> logout() async {
+    try {
+       await _authProvider.logout();
+    } catch (e) {
+      throw Exception('Failed to log in: $e');
+    }
+  }
+
 }

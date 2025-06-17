@@ -12,7 +12,11 @@ class User with _$User {
     required String username,
     required String email,
     required String profilePicture,
-    String? fcmToken, 
+    String? fcmToken,
+    @Default(false) bool isOnline,
+    @Default(false) bool isTyping,
+    @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
+    DateTime? lastSeen,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -24,16 +28,26 @@ class User with _$User {
       username: data["username"] ?? '',
       email: data["email"] ?? '',
       profilePicture: data["profilePicture"] ?? '',
-      fcmToken: data["fcmToken"], // Handle missing token gracefully
+      fcmToken: data["fcmToken"],
+      isOnline: data["isOnline"] ?? false,
+      isTyping: data["isTyping"] ?? false,
+      lastSeen: data["lastSeen"]?.toDate(),
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      "username": username, // Fixed key name
+      "username": username,
       "email": email,
       "profilePicture": profilePicture,
-      if (fcmToken != null) "fcmToken": fcmToken, // Include only if it's set
+      if (fcmToken != null) "fcmToken": fcmToken,
+      "isOnline": isOnline,
+      "isTyping": isTyping,
+      if (lastSeen != null) "lastSeen": lastSeen,
     };
   }
 }
+
+DateTime? _timestampFromJson(Timestamp? timestamp) => timestamp?.toDate();
+Timestamp? _timestampToJson(DateTime? date) => 
+    date != null ? Timestamp.fromDate(date) : null;

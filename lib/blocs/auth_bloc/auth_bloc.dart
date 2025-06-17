@@ -18,9 +18,15 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepository) : super(const AuthState.initial()) {
     on<LoginEvent>(_onLogin);
     on<RegisterEvent>(_onRegister);
-    on<LogoutEvent>((event, emit) => emit(const AuthState.loggedOut()));
+    on<LogoutEvent>((event, emit) async{
+      try{
+    await _authRepository.logout();
+    emit(AuthState.loggedOut());
+  }catch(e){
+      print(e);
   }
-
+  });
+  }
    Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async{
   emit(const AuthState.loading());
   try{

@@ -21,6 +21,9 @@ final theme = Theme.of(context);
           Expanded(
             child: TextField(
               controller: controller,
+              onChanged: (value) {
+                   chatBloc.add(UserTyping(true));
+              },
               style: theme.textTheme.bodyLarge,
               decoration:  InputDecoration(
                 hintText: "Type a message...",

@@ -80,8 +80,6 @@ final int? unreadCount;
     if (otherUserId == "Unknown") {
       throw Exception("No other user found in chat room participants.");
     }
-    // If the other user ID is not found, return a default value or handle the error as needed
-    // For example, you could return an empty string or throw an exception
   return otherUserId;
   }
 

@@ -169,17 +169,6 @@ class __$$MessageImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$MessageImpl implements _Message {
-  @override
-  Map<String, dynamic> toFirestore() {
-    return {
-      'id': id,
-      'senderId': senderId,
-      'receiverId': receiverId,
-      'content': content,
-      'timestamp': timestamp?.toIso8601String(),
-      'isRead': isRead,
-    };
-  }
   const _$MessageImpl(
       {this.id,
       required this.senderId,
@@ -244,6 +233,12 @@ class _$MessageImpl implements _Message {
     return _$$MessageImplToJson(
       this,
     );
+  }
+  
+  @override
+  Map<String, dynamic> toFirestore() {
+    // TODO: implement toFirestore
+    throw UnimplementedError();
   }
 }
 

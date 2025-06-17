@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
@@ -13,21 +14,26 @@ import 'package:real_time_chat_app/data/models/user.dart';
 import 'package:real_time_chat_app/data/repositories/chat_repository.dart';
 import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 import '../../data/models/chatRoom.dart';
+import '../../data/repositories/presence_repository.dart';
 import '../auth_bloc/auth_bloc.dart';
+import '../presence/presence_bloc.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
+ 
   bool _isFetching=false;
   final ChatRepository _chatRepository;
   final UserRepository _userRepository;
+  final PresenceRepository _presenceRepository;
+  
    StreamSubscription<List<Message>>? _messageSubscription;
   final _messageController = StreamController<List<Message>>.broadcast();
   Stream<List<Message>> get messageStream => _messageController.stream;
   StreamSubscription<List<ChatRoom>>? _chatRoomSubscription;
 final _chatRoomController=StreamController<List<ChatRoom>>.broadcast();
   Stream<List<ChatRoom>> get chatRoomStream => _chatRoomController.stream;
-  ChatBloc(this._chatRepository,this._userRepository) : super(ChatInitial()) {
+  ChatBloc(this._chatRepository,this._userRepository,this._presenceRepository) : super(ChatInitial()) {
   on<SelectChatRoomEvent>(_onSelectChatRoom);
   on<SendMessageEvent>(_onSendMessage);
   on<FetchChatRoomsEvent>(_onFetchChatRoom);
@@ -41,9 +47,20 @@ final _chatRoomController=StreamController<List<ChatRoom>>.broadcast();
 on<MessageFetchError>((event, emit) {
   emit(ChatError("Can't fetch messages: ${event.error}"));
 });
- 
+on<UserTyping>(_mapUserTypingToState);
   }
- 
+  
+void _mapUserTypingToState(UserTyping event, Emitter<ChatState> emit) {
+    if (state is ChatLoaded) {
+      final currentState = state as ChatLoaded;
+      emit(currentState.copyWith(isCurrentUserTyping: event.isTyping));
+      
+      _presenceRepository.updateTypingStatus(
+        FirebaseAuth.instance.currentUser!.uid,
+        event.isTyping,
+      );
+    }
+  }
 Future<void> _onFetchMoreMessages(
     FetchMoreMessagesEvent event, Emitter<ChatState> emit) async {
   if (_isFetching) return;

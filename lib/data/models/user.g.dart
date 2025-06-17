@@ -12,6 +12,9 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       email: json['email'] as String,
       profilePicture: json['profilePicture'] as String,
       fcmToken: json['fcmToken'] as String?,
+      isOnline: json['isOnline'] as bool? ?? false,
+      isTyping: json['isTyping'] as bool? ?? false,
+      lastSeen: _timestampFromJson(json['lastSeen'] as Timestamp?),
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -21,4 +24,7 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'email': instance.email,
       'profilePicture': instance.profilePicture,
       'fcmToken': instance.fcmToken,
+      'isOnline': instance.isOnline,
+      'isTyping': instance.isTyping,
+      'lastSeen': _timestampToJson(instance.lastSeen),
     };

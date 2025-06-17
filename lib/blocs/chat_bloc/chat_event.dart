@@ -102,7 +102,14 @@ class FetchMoreMessagesEvent extends ChatEvent {
   List<Object?> get props => [chatRoomId,lastMessageTimestamp];
 }
 
+class UserTyping extends ChatEvent {
+  final bool isTyping;
 
+   UserTyping(this.isTyping);
+
+  @override
+  List<Object> get props => [isTyping];
+}
 // class ChatLoadingMore extends ChatState {
 //   @override
 //   // TODO: implement props

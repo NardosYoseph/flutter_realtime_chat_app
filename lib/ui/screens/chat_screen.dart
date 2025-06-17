@@ -56,7 +56,7 @@ Widget build(BuildContext context) {
 
   return SafeArea(
     child: Scaffold(
-      appBar: ChatAppBar(),
+      appBar: ChatAppBar(otherUserId: widget.receiverId),
       body: BlocListener<ChatBloc, ChatState>(
         listener: (context, state) {
            if (state is ChatLoaded || state is ChatError) {

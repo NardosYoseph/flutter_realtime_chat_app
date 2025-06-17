@@ -20,18 +20,45 @@ class ChatLoaded extends ChatState {
   final String chatRoomId;
   final String otherUSerName;
   final String? lastMessageSender;
-  final bool hasReachedMax; // Add this property
+  final bool hasReachedMax;
+  final bool isCurrentUserTyping; // Added new field for typing indicator
 
   ChatLoaded(
-    this.messages,
-    this.chatRoomId,
-    this.otherUSerName,
-    this.lastMessageSender, {
-    this.hasReachedMax = false, // Default to false
-  });
+   this.messages,
+   this.chatRoomId,
+   this.otherUSerName,
+    this.lastMessageSender,
+    {this.hasReachedMax = false,
+    this.isCurrentUserTyping = false, }
+  );
 
   @override
-  List<Object?> get props => [messages, chatRoomId, otherUSerName, lastMessageSender, hasReachedMax];
+  List<Object?> get props => [
+        messages, 
+        chatRoomId, 
+        otherUSerName, 
+        lastMessageSender, 
+        hasReachedMax,
+        isCurrentUserTyping,
+      ];
+
+  ChatLoaded copyWith({
+    List<Message>? messages,
+    String? chatRoomId,
+    String? otherUSerName,
+    String? lastMessageSender,
+    bool? hasReachedMax,
+    bool? isCurrentUserTyping,
+  }) {
+    return ChatLoaded(
+      messages ?? this.messages,
+      chatRoomId ?? this.chatRoomId,
+      otherUSerName ?? this.otherUSerName,
+      lastMessageSender ?? this.lastMessageSender,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isCurrentUserTyping: isCurrentUserTyping ?? this.isCurrentUserTyping,
+    );
+  }
 }
 class ChatUpdatedState extends ChatState{
  final ChatRoom? chatRoom;
