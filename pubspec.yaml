@@ -60,6 +60,8 @@ dependencies:
   flare_flutter: ^3.0.2
   flutter_launcher_icons: ^0.13.1  # Add this line with proper version
   connectivity_plus: ^6.1.4
+  google_sign_in: ^6.3.0
+  flutter_signin_button: ^2.0.0
 
 # Then at root level (not indented):
 flutter_launcher_icons:

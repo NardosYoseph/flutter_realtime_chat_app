@@ -13,7 +13,7 @@ class UsersLoading extends UserState{
   
 }
 class UsersLoaded extends UserState{
-  List<User> users;
+  List<UserModel> users;
   UsersLoaded(this.users);
   @override
   // TODO: implement props
@@ -32,7 +32,7 @@ class SelectedUserLoading extends UserState{
   List<Object?> get props => [];
 }
 class SelectedUserLoaded extends UserState{
-  User user;
+  UserModel user;
   SelectedUserLoaded(this.user);
   @override
   // TODO: implement props

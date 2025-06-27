@@ -18,6 +18,7 @@ import 'package:real_time_chat_app/ui/screens/login_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'blocs/presence/presence_bloc.dart';
+import 'data/service/user_status_service.dart';
 import 'firebase/notification_service.dart';
 import 'themeProvider.dart';
 import 'ui/theme/appColors.dart';
@@ -26,6 +27,8 @@ import 'ui/theme/appTheme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final userStatusService = UserStatusService();
+  userStatusService.setupAppLifecycleListener();
 AppColors.lightColorScheme = ColorScheme.fromSeed(
     seedColor: AppColors.seedColor,
     brightness: Brightness.light,
@@ -82,7 +85,7 @@ class _MyAppState extends State<MyApp> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => AuthBloc(authRepository),
+            create: (context) => AuthBloc(authRepository,userRepository),
           ),
           BlocProvider(
             create: (context) => ChatBloc(chatRepository, userRepository,presenceRepository),

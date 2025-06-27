@@ -1,14 +1,68 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../blocs/chat_bloc/chat_bloc.dart';
 
-class ChatInputTextField extends StatelessWidget {
+class ChatInputTextField extends StatefulWidget {
   ChatInputTextField({super.key,required this.controller,required this.userId,required this.receiverId});
   final TextEditingController controller;
   final String userId;
   final String receiverId;
+
+  @override
+  State<ChatInputTextField> createState() => _ChatInputTextFieldState();
+}
+
+class _ChatInputTextFieldState extends State<ChatInputTextField> {
+  Timer? _typingTimer;
+  bool _isTyping = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_handleTextChange);
+  }
+    @override
+  void dispose() {
+    _cancelTimer();
+    widget.controller.removeListener(_handleTextChange);
+    // Ensure we clear typing status when widget is disposed
+    if (_isTyping) {
+      _updateTypingStatus(false);
+    }
+    super.dispose();
+  }
+
+  void _handleTextChange() {
+    final isTyping = widget.controller.text.isNotEmpty;
+    if (isTyping != _isTyping) {
+      _updateTypingStatus(isTyping);
+    }
+  }
+
+  void _updateTypingStatus(bool isTyping) {
+    _cancelTimer();
+    _isTyping = isTyping;
+    
+    context.read<ChatBloc>().add(UserTyping(isTyping));
+    
+    // Set timer to automatically set typing to false after 3 seconds of inactivity
+    if (isTyping) {
+      _typingTimer = Timer(const Duration(seconds: 3), () {
+        if (_isTyping) {
+          _updateTypingStatus(false);
+        }
+      });
+    }
+  }
+
+  void _cancelTimer() {
+    _typingTimer?.cancel();
+    _typingTimer = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +74,7 @@ final theme = Theme.of(context);
         children: [
           Expanded(
             child: TextField(
-              controller: controller,
+              controller: widget.controller,
               onChanged: (value) {
                    chatBloc.add(UserTyping(true));
               },
@@ -56,13 +110,16 @@ final theme = Theme.of(context);
             icon: Icon(Icons.send,color: theme.colorScheme.onPrimary),
             onPressed: () {
               final timestamp = DateTime.now();
-              final message = controller.text.trim();
+              final message = widget.controller.text.trim();
               if (message.isNotEmpty) {
-                print("input receiverId: $receiverId");
-                print("input senderid: $userId");
+                print("input receiverId: ${widget.receiverId}");
+                print("input senderid: ${widget.userId}");
                 print("send button tapped");
-                chatBloc.add(SendMessageEvent(userId,receiverId, message,timestamp));
-                controller.clear();
+                 if (_isTyping) {
+                    _updateTypingStatus(false);
+                  }
+                chatBloc.add(SendMessageEvent(widget.userId,widget.receiverId, message,timestamp));
+                widget.controller.clear();
               }
             },
           ),)
@@ -70,5 +127,4 @@ final theme = Theme.of(context);
       ),
     );
   }
-
 }

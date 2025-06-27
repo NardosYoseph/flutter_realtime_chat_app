@@ -7,7 +7,9 @@ import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
 
 import 'package:intl/intl.dart';
 
-import '../../blocs/auth_bloc/auth_bloc.dart'; 
+import '../../blocs/auth_bloc/auth_bloc.dart';
+import '../../data/models/user.dart';
+import '../../data/providers/user_provider.dart'; 
 
 class ChatRoomTile extends StatelessWidget {
   final ChatRoom chatRoom;
@@ -19,7 +21,7 @@ class ChatRoomTile extends StatelessWidget {
      final theme = Theme.of(context);
     final authBloc = context.read<AuthBloc>();
     final authState = authBloc.state;
-
+UserProvider userProvider = UserProvider();
     String? currentUserId;
     String? receiverId;
     if (authState is AuthenticatedState) {
@@ -32,106 +34,133 @@ class ChatRoomTile extends StatelessWidget {
     final isLastMessageFromCurrentUser = chatRoom.lastMessageSender == currentUserId;
     final hasUnreadMessages = chatRoom.unreadCount != null && chatRoom.unreadCount! > 0;
 
-    return Card(
-        margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(0),
-        side: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-          width: 0.5,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          if (authState is AuthenticatedState) {
-            final currentUserId = authState.userId;
-            context.read<ChatBloc>().add(
-              SelectChatRoomEvent(chatRoom.id, currentUserId),
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatScreen(receiverId: receiverId!,)),
-            );
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
+    return StreamBuilder<UserModel>(
+        stream: receiverId != null 
+          ? userProvider.getUserStream(receiverId)
+          : null,
+      builder: (context, snapshot) {
+           final isOnline = snapshot.hasData 
+            ? snapshot.data!.isOnline 
+            : false;
+        return Card(
+            margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+            side: BorderSide(
+              color: theme.colorScheme.outline.withOpacity(0.1),
+              width: 0.5,
+            ),
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child:  CircleAvatar(
-                 radius: 24,
-      backgroundColor: theme.colorScheme.primaryContainer,
-      child: Icon(
-        Icons.person,
-        size: 24,
-        color: theme.colorScheme.onPrimaryContainer,
-      ),
-                ),
+          child: InkWell(
+            onTap: () {
+              if (authState is AuthenticatedState) {
+                final currentUserId = authState.userId;
+                context.read<ChatBloc>().add(
+                  SelectChatRoomEvent(chatRoom.id, currentUserId),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen(receiverId: receiverId!,)),
+                );
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      chatRoom.otherUserName ?? "user",
-                      
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _truncateMessage(chatRoom.lastMessage ??  "${chatRoom.otherUserName} joined the chat"),
-                     style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              child: Row(
                 children: [
-                  Text(
-                    _formatTimestamp(chatRoom.lastMessageTimestamp),
-                    style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.5),
-          ),
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child:  Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [CircleAvatar(
+                       radius: 24,
+                            backgroundColor: theme.colorScheme.primaryContainer,
+                            child: Icon(
+                              Icons.person,
+                              size: 24,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                      ),
+                      if (isOnline)
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: theme.colorScheme.background,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      
+                ]),
                   ),
-                  const SizedBox(height: 4),
-                  if (isLastMessageFromCurrentUser)
-                    Icon(
-                      hasUnreadMessages ? Icons.done : Icons.done_all,
-                      size: 16,
-                      color: hasUnreadMessages 
-                ? theme.colorScheme.onSurface.withOpacity(0.5)
-                : theme.colorScheme.primary,
-                    )
-                  else if (hasUnreadMessages)
-                    CircleAvatar(
-                      radius: 10,
-                      backgroundColor: theme.colorScheme.primary,
-                      child: Text(
-                        '${chatRoom.unreadCount}',
-                         style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onPrimary,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          chatRoom.otherUserName ?? "user",
+                          
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _truncateMessage(chatRoom.lastMessage ??  "${chatRoom.otherUserName} joined the chat"),
+                         style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        _formatTimestamp(chatRoom.lastMessageTimestamp),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.5),
               ),
                       ),
-                    ),
+                      const SizedBox(height: 4),
+                      if (isLastMessageFromCurrentUser)
+                        Icon(
+                          hasUnreadMessages ? Icons.done : Icons.done_all,
+                          size: 16,
+                          color: hasUnreadMessages 
+                    ? theme.colorScheme.onSurface.withOpacity(0.5)
+                    : theme.colorScheme.primary,
+                        )
+                      else if (hasUnreadMessages)
+                        CircleAvatar(
+                          radius: 10,
+                          backgroundColor: theme.colorScheme.primary,
+                          child: Text(
+                            '${chatRoom.unreadCount}',
+                             style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 

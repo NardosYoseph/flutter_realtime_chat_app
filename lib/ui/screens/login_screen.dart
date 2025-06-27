@@ -125,34 +125,73 @@ final FocusNode passwordFocusNode = FocusNode();
                       if (state is AuthStateLoading) {
                         return const CircularProgressIndicator();
                       }
-                      return SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          // style: ElevatedButton.styleFrom(
-                          // backgroundColor: Theme.of(context).colorScheme.primary,
-                          //   shape: RoundedRectangleBorder(
-                          //     borderRadius: BorderRadius.circular(12),
-                          //   ),
-                          //   padding: const EdgeInsets.symmetric(
-                          //       vertical: 12, horizontal: 40),
-                          //       textStyle: Theme.of(context).textTheme.labelLarge,
-                          // ),
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              // style: ElevatedButton.styleFrom(
+                              // backgroundColor: Theme.of(context).colorScheme.primary,
+                              //   shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(12),
+                              //   ),
+                              //   padding: const EdgeInsets.symmetric(
+                              //       vertical: 12, horizontal: 40),
+                              //       textStyle: Theme.of(context).textTheme.labelLarge,
+                              // ),
+                              
+                              onPressed: () {
+                                  teddyControls.play("idle");
+                                 if (_formKey.currentState?.validate() ?? false) {
+                                    context.read<AuthBloc>().add(
+                                      LoginEvent(
+                                        email: emailController.text.trim(),
+                                        password: passwordController.text.trim(),
+                                      ),
+                                    );
+                                  }
+                                 
+                            
+                              },
+                                               child: const Text('Login', style: TextStyle(fontSize: 16)),
+                            ),
+
+
+                          ),
                           
-                          onPressed: () {
-                              teddyControls.play("idle");
-                             if (_formKey.currentState?.validate() ?? false) {
-                                context.read<AuthBloc>().add(
-                                  LoginEvent(
-                                    email: emailController.text.trim(),
-                                    password: passwordController.text.trim(),
-                                  ),
-                                );
-                              }
-                             
-                        
-                          },
-                                           child: const Text('Login', style: TextStyle(fontSize: 16)),
-                        ),
+// const SizedBox(height: 16),
+// // Google Sign-In Button
+// SizedBox(
+//   width: double.infinity,
+//   height: 50,
+//   child: ElevatedButton(
+//     style: ElevatedButton.styleFrom(
+//       backgroundColor: Colors.white,
+//       foregroundColor: Colors.black,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//       side: BorderSide(color: Colors.grey.shade300),
+//     ),
+//     onPressed: () {
+//       teddyControls.play("idle");
+//       context.read<AuthBloc>().add(GoogleSignInEvent());
+//     },
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         Image.asset(
+//           'assets/google_logo.png',  // Add a Google logo asset
+//           height: 34,
+//           width: 34,
+//         ),
+//         const SizedBox(width: 10),
+//         const Text('Sign in with Google'),
+//       ],
+//     ),
+//   ),
+  // )
+                        ],
                       );
                     },
                   ),

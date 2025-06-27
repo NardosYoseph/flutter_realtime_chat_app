@@ -40,7 +40,7 @@ emit(UsersError("error fetching user"));
     final chatRoomId = (currentUserId.compareTo(selectedUserId) < 0)
         ? "$currentUserId\_$selectedUserId"
         : "$selectedUserId\_$currentUserId";
-    User user = await _userRepository.fetchUser(event.selectedUserId);
+    UserModel user = await _userRepository.fetchUser(event.selectedUserId);
       print("user fetched $user");
 
   emit(SelectedUserLoaded(user));

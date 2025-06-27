@@ -115,7 +115,7 @@ if (querySnapshot.docs.isEmpty) {
     final docSnapshot = await _firestore.collection('users').doc(message.senderId).get();
 
     if (docSnapshot.exists) {
-     sendername= User.fromFirestore(docSnapshot).username;
+     sendername= UserModel.fromFirestore(docSnapshot).username;
       print("Sender name: $sendername");
     } else {
       throw Exception('User not found');
@@ -196,10 +196,16 @@ Future<void> sendPushNotification(String token, String title, String body) async
     final doc = await _firestore.collection('chatRooms').doc(chatRoomId).get();
     if (doc.exists) {
       final data = doc.data()!;
+          DateTime? _parseDate(dynamic value) {
+      if (value == null) return null;
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value);
+      return null;
+    }
       return ChatRoom(
         id: chatRoomId,
         participants: List<String>.from(data['participants']),
-        createdAt: (data['createdAt'] as Timestamp).toDate(),
+        createdAt: _parseDate(data['createdAt']),
         lastMessage: null, 
         lastMessageSender: data['lastMessageSender']
       );

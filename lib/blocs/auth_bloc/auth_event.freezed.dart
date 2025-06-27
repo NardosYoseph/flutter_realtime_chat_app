@@ -21,6 +21,7 @@ mixin _$AuthEvent {
     required TResult Function(String email, String password) login,
     required TResult Function(String username, String email, String password)
         register,
+    required TResult Function() googleSignIn,
     required TResult Function() logout,
   }) =>
       throw _privateConstructorUsedError;
@@ -28,6 +29,7 @@ mixin _$AuthEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? login,
     TResult? Function(String username, String email, String password)? register,
+    TResult? Function()? googleSignIn,
     TResult? Function()? logout,
   }) =>
       throw _privateConstructorUsedError;
@@ -35,6 +37,7 @@ mixin _$AuthEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? login,
     TResult Function(String username, String email, String password)? register,
+    TResult Function()? googleSignIn,
     TResult Function()? logout,
     required TResult orElse(),
   }) =>
@@ -43,6 +46,7 @@ mixin _$AuthEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(LoginEvent value) login,
     required TResult Function(RegisterEvent value) register,
+    required TResult Function(GoogleSignInEvent value) googleSignIn,
     required TResult Function(LogoutEvent value) logout,
   }) =>
       throw _privateConstructorUsedError;
@@ -50,6 +54,7 @@ mixin _$AuthEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoginEvent value)? login,
     TResult? Function(RegisterEvent value)? register,
+    TResult? Function(GoogleSignInEvent value)? googleSignIn,
     TResult? Function(LogoutEvent value)? logout,
   }) =>
       throw _privateConstructorUsedError;
@@ -57,6 +62,7 @@ mixin _$AuthEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoginEvent value)? login,
     TResult Function(RegisterEvent value)? register,
+    TResult Function(GoogleSignInEvent value)? googleSignIn,
     TResult Function(LogoutEvent value)? logout,
     required TResult orElse(),
   }) =>
@@ -163,6 +169,7 @@ class _$LoginEventImpl implements LoginEvent {
     required TResult Function(String email, String password) login,
     required TResult Function(String username, String email, String password)
         register,
+    required TResult Function() googleSignIn,
     required TResult Function() logout,
   }) {
     return login(email, password);
@@ -173,6 +180,7 @@ class _$LoginEventImpl implements LoginEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? login,
     TResult? Function(String username, String email, String password)? register,
+    TResult? Function()? googleSignIn,
     TResult? Function()? logout,
   }) {
     return login?.call(email, password);
@@ -183,6 +191,7 @@ class _$LoginEventImpl implements LoginEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? login,
     TResult Function(String username, String email, String password)? register,
+    TResult Function()? googleSignIn,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
@@ -197,6 +206,7 @@ class _$LoginEventImpl implements LoginEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(LoginEvent value) login,
     required TResult Function(RegisterEvent value) register,
+    required TResult Function(GoogleSignInEvent value) googleSignIn,
     required TResult Function(LogoutEvent value) logout,
   }) {
     return login(this);
@@ -207,6 +217,7 @@ class _$LoginEventImpl implements LoginEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoginEvent value)? login,
     TResult? Function(RegisterEvent value)? register,
+    TResult? Function(GoogleSignInEvent value)? googleSignIn,
     TResult? Function(LogoutEvent value)? logout,
   }) {
     return login?.call(this);
@@ -217,6 +228,7 @@ class _$LoginEventImpl implements LoginEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoginEvent value)? login,
     TResult Function(RegisterEvent value)? register,
+    TResult Function(GoogleSignInEvent value)? googleSignIn,
     TResult Function(LogoutEvent value)? logout,
     required TResult orElse(),
   }) {
@@ -332,6 +344,7 @@ class _$RegisterEventImpl implements RegisterEvent {
     required TResult Function(String email, String password) login,
     required TResult Function(String username, String email, String password)
         register,
+    required TResult Function() googleSignIn,
     required TResult Function() logout,
   }) {
     return register(username, email, password);
@@ -342,6 +355,7 @@ class _$RegisterEventImpl implements RegisterEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? login,
     TResult? Function(String username, String email, String password)? register,
+    TResult? Function()? googleSignIn,
     TResult? Function()? logout,
   }) {
     return register?.call(username, email, password);
@@ -352,6 +366,7 @@ class _$RegisterEventImpl implements RegisterEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? login,
     TResult Function(String username, String email, String password)? register,
+    TResult Function()? googleSignIn,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
@@ -366,6 +381,7 @@ class _$RegisterEventImpl implements RegisterEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(LoginEvent value) login,
     required TResult Function(RegisterEvent value) register,
+    required TResult Function(GoogleSignInEvent value) googleSignIn,
     required TResult Function(LogoutEvent value) logout,
   }) {
     return register(this);
@@ -376,6 +392,7 @@ class _$RegisterEventImpl implements RegisterEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoginEvent value)? login,
     TResult? Function(RegisterEvent value)? register,
+    TResult? Function(GoogleSignInEvent value)? googleSignIn,
     TResult? Function(LogoutEvent value)? logout,
   }) {
     return register?.call(this);
@@ -386,6 +403,7 @@ class _$RegisterEventImpl implements RegisterEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoginEvent value)? login,
     TResult Function(RegisterEvent value)? register,
+    TResult Function(GoogleSignInEvent value)? googleSignIn,
     TResult Function(LogoutEvent value)? logout,
     required TResult orElse(),
   }) {
@@ -411,6 +429,124 @@ abstract class RegisterEvent implements AuthEvent {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RegisterEventImplCopyWith<_$RegisterEventImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GoogleSignInEventImplCopyWith<$Res> {
+  factory _$$GoogleSignInEventImplCopyWith(_$GoogleSignInEventImpl value,
+          $Res Function(_$GoogleSignInEventImpl) then) =
+      __$$GoogleSignInEventImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$GoogleSignInEventImplCopyWithImpl<$Res>
+    extends _$AuthEventCopyWithImpl<$Res, _$GoogleSignInEventImpl>
+    implements _$$GoogleSignInEventImplCopyWith<$Res> {
+  __$$GoogleSignInEventImplCopyWithImpl(_$GoogleSignInEventImpl _value,
+      $Res Function(_$GoogleSignInEventImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of AuthEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$GoogleSignInEventImpl implements GoogleSignInEvent {
+  const _$GoogleSignInEventImpl();
+
+  @override
+  String toString() {
+    return 'AuthEvent.googleSignIn()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$GoogleSignInEventImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email, String password) login,
+    required TResult Function(String username, String email, String password)
+        register,
+    required TResult Function() googleSignIn,
+    required TResult Function() logout,
+  }) {
+    return googleSignIn();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email, String password)? login,
+    TResult? Function(String username, String email, String password)? register,
+    TResult? Function()? googleSignIn,
+    TResult? Function()? logout,
+  }) {
+    return googleSignIn?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email, String password)? login,
+    TResult Function(String username, String email, String password)? register,
+    TResult Function()? googleSignIn,
+    TResult Function()? logout,
+    required TResult orElse(),
+  }) {
+    if (googleSignIn != null) {
+      return googleSignIn();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoginEvent value) login,
+    required TResult Function(RegisterEvent value) register,
+    required TResult Function(GoogleSignInEvent value) googleSignIn,
+    required TResult Function(LogoutEvent value) logout,
+  }) {
+    return googleSignIn(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoginEvent value)? login,
+    TResult? Function(RegisterEvent value)? register,
+    TResult? Function(GoogleSignInEvent value)? googleSignIn,
+    TResult? Function(LogoutEvent value)? logout,
+  }) {
+    return googleSignIn?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoginEvent value)? login,
+    TResult Function(RegisterEvent value)? register,
+    TResult Function(GoogleSignInEvent value)? googleSignIn,
+    TResult Function(LogoutEvent value)? logout,
+    required TResult orElse(),
+  }) {
+    if (googleSignIn != null) {
+      return googleSignIn(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GoogleSignInEvent implements AuthEvent {
+  const factory GoogleSignInEvent() = _$GoogleSignInEventImpl;
 }
 
 /// @nodoc
@@ -457,6 +593,7 @@ class _$LogoutEventImpl implements LogoutEvent {
     required TResult Function(String email, String password) login,
     required TResult Function(String username, String email, String password)
         register,
+    required TResult Function() googleSignIn,
     required TResult Function() logout,
   }) {
     return logout();
@@ -467,6 +604,7 @@ class _$LogoutEventImpl implements LogoutEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? login,
     TResult? Function(String username, String email, String password)? register,
+    TResult? Function()? googleSignIn,
     TResult? Function()? logout,
   }) {
     return logout?.call();
@@ -477,6 +615,7 @@ class _$LogoutEventImpl implements LogoutEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? login,
     TResult Function(String username, String email, String password)? register,
+    TResult Function()? googleSignIn,
     TResult Function()? logout,
     required TResult orElse(),
   }) {
@@ -491,6 +630,7 @@ class _$LogoutEventImpl implements LogoutEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(LoginEvent value) login,
     required TResult Function(RegisterEvent value) register,
+    required TResult Function(GoogleSignInEvent value) googleSignIn,
     required TResult Function(LogoutEvent value) logout,
   }) {
     return logout(this);
@@ -501,6 +641,7 @@ class _$LogoutEventImpl implements LogoutEvent {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(LoginEvent value)? login,
     TResult? Function(RegisterEvent value)? register,
+    TResult? Function(GoogleSignInEvent value)? googleSignIn,
     TResult? Function(LogoutEvent value)? logout,
   }) {
     return logout?.call(this);
@@ -511,6 +652,7 @@ class _$LogoutEventImpl implements LogoutEvent {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(LoginEvent value)? login,
     TResult Function(RegisterEvent value)? register,
+    TResult Function(GoogleSignInEvent value)? googleSignIn,
     TResult Function(LogoutEvent value)? logout,
     required TResult orElse(),
   }) {

@@ -1,18 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:real_time_chat_app/data/models/user.dart';
 import '../providers/auth_provider.dart';
 import 'user_repository.dart';
 
 class AuthRepository {
-  final AuthProvider _authProvider;
+  final AppAuthProvider _authProvider;
   final UserRepository _userRepository;
 
   AuthRepository({
-    AuthProvider? authProvider,
+    AppAuthProvider? authProvider,
     UserRepository? userRepository,
-  })  : _authProvider = authProvider ?? AuthProvider(),
+  })  : _authProvider = authProvider ?? AppAuthProvider(),
         _userRepository = userRepository ?? UserRepository();
 
-  Future<User> login(String email, String password) async {
+  Future<UserModel> login(String email, String password) async {
     try {
       final userCredential = await _authProvider.login(email, password);
       print(userCredential);
@@ -30,7 +31,7 @@ class AuthRepository {
     }
   }
 
-  Future<User> register(String email, String password, String name) async {
+  Future<UserModel> register(String email, String password, String name) async {
     print("in repo class");
 
     try {
@@ -53,6 +54,14 @@ class AuthRepository {
        await _authProvider.logout();
     } catch (e) {
       throw Exception('Failed to log in: $e');
+    }
+  }
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      final userCredential = await _authProvider.signInWithGoogle();
+      return userCredential;
+    } catch (e) {
+      throw Exception('Google sign-in failed: ${e.toString()}');
     }
   }
 

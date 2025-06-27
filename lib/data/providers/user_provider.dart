@@ -3,7 +3,7 @@ import 'package:real_time_chat_app/data/models/user.dart';
 
 class UserProvider {
  final FirebaseFirestore _firebaseFirestore=FirebaseFirestore.instance;
- Future<List<User>> searchUser(String query)async{
+ Future<List<UserModel>> searchUser(String query)async{
   try{
       print("inside provider try ");
 
@@ -11,24 +11,32 @@ class UserProvider {
           .where('username', isLessThanOrEqualTo: "$query\uf8ff").get();
       print("inside provider try success $snapShoot");
 
-  return snapShoot.docs.map((doc)=>User.fromFirestore(doc)).toList();
+  return snapShoot.docs.map((doc)=>UserModel.fromFirestore(doc)).toList();
   }catch(e){
     throw Exception('error sarching user');
   }
 
  }
- Future<User> fetchUser(String userId) async {
+ Future<UserModel> fetchUser(String userId) async {
  try {
     final docSnapshot = await _firebaseFirestore.collection('users').doc(userId).get();
 
     if (docSnapshot.exists) {
-      return User.fromFirestore(docSnapshot);
+      return UserModel.fromFirestore(docSnapshot);
     } else {
       throw Exception('User not found');
     }
   } catch (e) {
     throw Exception('Error fetching user: $e');
   }
+}
+// In your UserProvider class
+Stream<UserModel> getUserStream(String userId) {
+  return _firebaseFirestore
+      .collection('users')
+      .doc(userId)
+      .snapshots()
+      .map((doc) => UserModel.fromFirestore(doc));
 }
 
 }

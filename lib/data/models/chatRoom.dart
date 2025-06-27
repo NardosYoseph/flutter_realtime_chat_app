@@ -24,13 +24,19 @@ final int? unreadCount;
   // Factory constructor to create a ChatRoom from Firestore data
   factory ChatRoom.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+      DateTime? _parseDate(dynamic value) {
+    if (value == null) return null;
+    if (value is Timestamp) return value.toDate();
+    if (value is String) return DateTime.tryParse(value);
+    return null;
+  }
     return ChatRoom(
       id: doc.id,
       otherUserName: data['otherUserName'] as String?,
       participants: List<String>.from(data['participants'] ?? []),
-      createdAt: (data['createdAt'])?.toDate(),
+      createdAt: _parseDate(data['createdAt']),
       lastMessage: data['lastMessage'] as String?,
-      lastMessageTimestamp: (data['lastMessageTimestamp'] )?.toDate(),
+      lastMessageTimestamp: _parseDate(data['lastMessageTimestamp']),
       lastMessageSender: data['lastMessageSender'] as String?,
       unreadCount: data['unreadCount'] as int?,
     );

@@ -13,7 +13,7 @@ class UserRepository {
       : _userProvider = userProvider ?? UserProvider(),
         _chatProvider = chatProvider ?? ChatProvider();
 
-  Future<List<User>> searchUser(String query) async {
+  Future<List<UserModel>> searchUser(String query) async {
     try {
       print("inside repo try ");
       final response = await _userProvider.searchUser(query);
@@ -24,7 +24,7 @@ class UserRepository {
       throw Exception("Failed to fetch users: $e");
     }
   }
- Future<User> fetchUser(String userId) async {
+ Future<UserModel> fetchUser(String userId) async {
     try {
       print("inside repo try ");
       final response = await _userProvider.fetchUser(userId);

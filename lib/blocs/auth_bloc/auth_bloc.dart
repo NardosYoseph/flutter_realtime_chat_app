@@ -6,16 +6,15 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_event.dart';
 import 'package:real_time_chat_app/blocs/auth_bloc/auth_state.dart';
+import 'package:real_time_chat_app/data/repositories/user_repository.dart';
 
 import '../../data/repositories/auth_repository.dart';
 
-// part 'auth_event.dart';
-// part 'auth_state.dart';
 
 class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   AuthRepository _authRepository;
-
-  AuthBloc(this._authRepository) : super(const AuthState.initial()) {
+ UserRepository _userRepository;
+  AuthBloc(this._authRepository, this._userRepository) : super(const AuthState.initial()) {
     on<LoginEvent>(_onLogin);
     on<RegisterEvent>(_onRegister);
     on<LogoutEvent>((event, emit) async{
@@ -26,7 +25,27 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
       print(e);
   }
   });
+    on<GoogleSignInEvent>(_handleGoogleSignIn);
+  
   }
+  Future<void> _handleGoogleSignIn(GoogleSignInEvent event,Emitter<AuthState> emit) async {
+    try {
+      emit(const AuthState.loading());
+      final userCredential = await _authRepository.signInWithGoogle();
+
+      final user = await _userRepository.fetchUser(userCredential.user?.uid ?? '');
+
+
+      emit(AuthState.authenticated(
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+      ));
+    } catch (e) {
+      emit(AuthState.authenticationError(e.toString()));
+    }
+  }
+
    Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async{
   emit(const AuthState.loading());
   try{
@@ -86,8 +105,8 @@ Map<String, dynamic>? toJson(AuthState state) {
     print("Error serializing AuthState: $e");
     return null;
   }
-}
-}
+}}
+
 
 
 

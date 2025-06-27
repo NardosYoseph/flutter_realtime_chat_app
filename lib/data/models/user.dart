@@ -6,8 +6,8 @@ part 'user.freezed.dart';
 part 'user.g.dart';
 
 @freezed
-class User with _$User {
-  const factory User({
+class UserModel with _$UserModel {
+  const factory UserModel({
     required String id,
     required String username,
     required String email,
@@ -17,13 +17,13 @@ class User with _$User {
     @Default(false) bool isTyping,
     @JsonKey(fromJson: _timestampFromJson, toJson: _timestampToJson)
     DateTime? lastSeen,
-  }) = _User;
+  }) = _UserModel;
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
-  factory User.fromFirestore(DocumentSnapshot doc) {
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return User(
+    return UserModel(
       id: doc.id,
       username: data["username"] ?? '',
       email: data["email"] ?? '',

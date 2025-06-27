@@ -13,6 +13,7 @@ const factory AuthEvent.register({
     required String email,
     required String password,
 })=RegisterEvent;
+const factory AuthEvent.googleSignIn() = GoogleSignInEvent;
 const factory AuthEvent.logout()=LogoutEvent;
 }
 
