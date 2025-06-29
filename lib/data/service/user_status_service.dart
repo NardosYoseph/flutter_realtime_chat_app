@@ -7,13 +7,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserStatusService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  bool _initialStatusSet = false;
   Future<void> updateOnlineStatus(bool isOnline) async {
     final user = _auth.currentUser;
-    if (user != null) {
+    if (user != null ) {
       await _firestore.collection('users').doc(user.uid).set({
         'isOnline': isOnline,
-        'lastSeen': FieldValue.serverTimestamp(),
+        'lastSeen': isOnline ? null : FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     }
   }
@@ -23,6 +23,12 @@ class UserStatusService {
       await _firestore.collection('users').doc(user.uid).set({
       'isTyping': isTyping,
     }, SetOptions(merge: true));}
+  }
+   Future<void> handleAppStart() async {
+    if (!_initialStatusSet) {
+      await updateOnlineStatus(true);
+      _initialStatusSet = true;
+    }
   }
   void setupAppLifecycleListener() {
     WidgetsBinding.instance.addObserver(

@@ -48,7 +48,7 @@ final int? unreadCount;
       'participants': participants,
       'lastMessage': lastMessage,
       'createdAt':createdAt,
-      'lastMessageTimestamp': lastMessageTimestamp,
+      'lastMessageTimestamp': FieldValue.serverTimestamp(),
       'lastMessageSender': lastMessageSender,
       'unreadCount': unreadCount,
     };

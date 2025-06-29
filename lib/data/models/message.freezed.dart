@@ -168,14 +168,15 @@ class __$$MessageImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$MessageImpl implements _Message {
+class _$MessageImpl extends _Message {
   const _$MessageImpl(
       {this.id,
       required this.senderId,
       this.receiverId,
       required this.content,
       this.timestamp,
-      this.isRead = false});
+      this.isRead = false})
+      : super._();
 
   factory _$MessageImpl.fromJson(Map<String, dynamic> json) =>
       _$$MessageImplFromJson(json);
@@ -234,15 +235,9 @@ class _$MessageImpl implements _Message {
       this,
     );
   }
-  
-  @override
-  Map<String, dynamic> toFirestore() {
-    // TODO: implement toFirestore
-    throw UnimplementedError();
-  }
 }
 
-abstract class _Message implements Message {
+abstract class _Message extends Message {
   const factory _Message(
       {final String? id,
       required final String senderId,
@@ -250,6 +245,7 @@ abstract class _Message implements Message {
       required final String content,
       final DateTime? timestamp,
       final bool isRead}) = _$MessageImpl;
+  const _Message._() : super._();
 
   factory _Message.fromJson(Map<String, dynamic> json) = _$MessageImpl.fromJson;
 

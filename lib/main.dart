@@ -29,6 +29,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   final userStatusService = UserStatusService();
   userStatusService.setupAppLifecycleListener();
+  await userStatusService.handleAppStart();
 AppColors.lightColorScheme = ColorScheme.fromSeed(
     seedColor: AppColors.seedColor,
     brightness: Brightness.light,

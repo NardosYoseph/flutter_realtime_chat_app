@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:real_time_chat_app/data/models/chatRoom.dart';
 import 'package:http/http.dart' as http;
 import '../models/message.dart';
@@ -16,6 +17,7 @@ class ChatProvider {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // Fetch messages from a specific chat room
   Stream<List<Message>> fetchMessages(String chatRoomId) {
+ 
   print("Inside fetch messages provider (real-time)");
   try {
     return _firestore
@@ -34,15 +36,17 @@ class ChatProvider {
     throw Exception("Failed to fetch messages: $e");
   }
 }
+
  Future<List<Message>> fetchOlderMessages(String chatRoomId, DateTime lastMessageTimestamp) async {
     print("Fetching older messages...");
     try {
+      final lastTimestamp = Timestamp.fromDate(lastMessageTimestamp);
       final querySnapshot = await _firestore
           .collection('chatRooms')
           .doc(chatRoomId)
           .collection('messages')
           .orderBy('timestamp', descending: true)
-          .startAfter([lastMessageTimestamp])
+          .startAfter([lastTimestamp])
           .limit(10)
           .get();
 if (querySnapshot.docs.isEmpty) {
@@ -95,14 +99,16 @@ if (querySnapshot.docs.isEmpty) {
 }
   // Send a message to a specific chat room
   Future<void> sendMessage(String chatRoomId, Message message) async {
+   
     try {
-      print("Inside send message provider");
-
+      //  await _refreshAuthToken();
+       final messageData = message.toFirestore();
+      print("Inside send message provider $messageData");
       await _firestore
           .collection('chatRooms')
           .doc(chatRoomId)
           .collection('messages')
-          .add(message.toJson());
+          .add(messageData);
 
  DocumentSnapshot userDoc = await _firestore.collection('users').doc(message.receiverId).get();
   String? receiverFcmToken = userDoc['fcmToken'];
@@ -134,11 +140,32 @@ if (querySnapshot.docs.isEmpty) {
       print("Send message provider success");
     } catch (e) {
       print("Send message provider error $e");
+    // if (e.toString().contains('Invalid_grant') || 
+    //     e.toString().contains('token must be a short-lived token')) {
+    //   // Force reauthentication
+    //   await FirebaseAuth.instance.signOut();
+    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //     // Your auth credential here
+    //   );
+    //   // Retry once
+    //   return sendMessage(chatRoomId, message);
+        // }
       throw Exception("Failed to send message: $e");
     }
   }
 
-
+// Future<void> _refreshAuthToken() async {
+//   try {
+//     final user = FirebaseAuth.instance.currentUser;
+//     if (user != null) {
+//       final tokenResult = await user.getIdTokenResult(true); // Force refresh
+//       print("Token refreshed, expires at: ${tokenResult.expirationTime}");
+//     }
+//   } catch (e) {
+//     print("Error refreshing token: $e");
+//     rethrow;
+//   }
+// }
 Future<String> getAccessToken() async {
   final jsonString = await rootBundle.loadString('assets/real-time-chat-app-a295b-firebase-adminsdk-dvtwv-d2582051b6.json');
   final jsonKey = jsonDecode(jsonString);

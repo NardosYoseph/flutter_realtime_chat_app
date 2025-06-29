@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_time_chat_app/blocs/chat_bloc/chat_bloc.dart';
@@ -109,12 +110,12 @@ class _ChatAppBarState extends State<ChatAppBar> {
                                 style: TextStyle(fontSize: 12, color: Colors.grey[400]),
                               )
                             else if (isTyping)
-                              Text(
+                              const Text(
                                 "typing...",
                                 style: TextStyle(fontSize: 12, color: Colors.green),
                               )
                             else if (isOnline)
-                              Text(
+                              const Text(
                                 "online",
                                 style: TextStyle(fontSize: 12, color: Colors.green),
                               )

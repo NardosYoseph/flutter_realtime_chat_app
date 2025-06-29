@@ -42,6 +42,9 @@ UserProvider userProvider = UserProvider();
            final isOnline = snapshot.hasData 
             ? snapshot.data!.isOnline 
             : false;
+             final isTyping = snapshot.hasData 
+            ? snapshot.data!.isTyping 
+            : false;
         return Card(
             margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
@@ -115,6 +118,12 @@ UserProvider userProvider = UserProvider();
                           ),
                         ),
                         const SizedBox(height: 4),
+                        if (isTyping)
+                          const Text(
+                                "typing...",
+                                style: TextStyle(fontSize: 12, color: Colors.green),
+                              )
+                        else
                         Text(
                           _truncateMessage(chatRoom.lastMessage ??  "${chatRoom.otherUserName} joined the chat"),
                          style: theme.textTheme.bodyMedium?.copyWith(

@@ -20,7 +20,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final _scrollController = ScrollController();
   bool _isFetching=false;
-DateTime? timestamp;
   @override
   void initState() {
     super.initState();
@@ -49,7 +48,7 @@ DateTime? timestamp;
 
 @override
 Widget build(BuildContext context) {
-  final chatBloc = context.read<ChatBloc>();
+  context.read<ChatBloc>();
   final authBloc = context.read<AuthBloc>();
           print('chat screen receiverId ${widget.receiverId}');
           
@@ -64,7 +63,7 @@ Widget build(BuildContext context) {
         }
           if (state is ChatError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Error: ${state.errorMessage}")),
+              const SnackBar(content: Text("Error: Please try again later")),
             );
           }
         },
@@ -178,7 +177,7 @@ Widget build(BuildContext context) {
       }
     
       if (state is ChatError) {
-        return Center(child: Text(state.errorMessage));
+        return const Center(child: Text("Error occured ☹️. Check Your Device Date and Time."));
       }
     
       return const Center(child: Text("No messages available"));

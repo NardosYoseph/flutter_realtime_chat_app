@@ -19,7 +19,7 @@ class ChatInputTextField extends StatefulWidget {
 class _ChatInputTextFieldState extends State<ChatInputTextField> {
   Timer? _typingTimer;
   bool _isTyping = false;
-
+String _previousText = '';
   @override
   void initState() {
     super.initState();
@@ -37,27 +37,37 @@ class _ChatInputTextFieldState extends State<ChatInputTextField> {
   }
 
   void _handleTextChange() {
-    final isTyping = widget.controller.text.isNotEmpty;
-    if (isTyping != _isTyping) {
-      _updateTypingStatus(isTyping);
+    final currentText = widget.controller.text;
+    
+    // Only update status if text actually changed (not just cursor movement)
+    if (currentText != _previousText) {
+      _previousText = currentText;
+      final isTyping = currentText.isNotEmpty;
+      
+      // Always reset timer on any change
+      _cancelTimer();
+      
+      // Update status if changed
+      if (isTyping != _isTyping) {
+        _updateTypingStatus(isTyping);
+      }
+      
+      // Set timer to stop typing after inactivity
+      if (isTyping) {
+        _typingTimer = Timer(const Duration(seconds: 3), () {
+          if (_isTyping) {
+            _updateTypingStatus(false);
+          }
+        });
+      }
     }
   }
 
-  void _updateTypingStatus(bool isTyping) {
-    _cancelTimer();
+    void _updateTypingStatus(bool isTyping) {
     _isTyping = isTyping;
-    
     context.read<ChatBloc>().add(UserTyping(isTyping));
-    
-    // Set timer to automatically set typing to false after 3 seconds of inactivity
-    if (isTyping) {
-      _typingTimer = Timer(const Duration(seconds: 3), () {
-        if (_isTyping) {
-          _updateTypingStatus(false);
-        }
-      });
-    }
   }
+
 
   void _cancelTimer() {
     _typingTimer?.cancel();
@@ -76,7 +86,10 @@ final theme = Theme.of(context);
             child: TextField(
               controller: widget.controller,
               onChanged: (value) {
-                   chatBloc.add(UserTyping(true));
+                if(value.isEmpty && _isTyping) {
+                  _updateTypingStatus(false);
+                } else if(value.isNotEmpty && !_isTyping) {
+                   chatBloc.add(UserTyping(true));}
               },
               style: theme.textTheme.bodyLarge,
               decoration:  InputDecoration(
@@ -109,7 +122,6 @@ final theme = Theme.of(context);
             child: IconButton(
             icon: Icon(Icons.send,color: theme.colorScheme.onPrimary),
             onPressed: () {
-              final timestamp = DateTime.now();
               final message = widget.controller.text.trim();
               if (message.isNotEmpty) {
                 print("input receiverId: ${widget.receiverId}");
@@ -118,7 +130,7 @@ final theme = Theme.of(context);
                  if (_isTyping) {
                     _updateTypingStatus(false);
                   }
-                chatBloc.add(SendMessageEvent(widget.userId,widget.receiverId, message,timestamp));
+                chatBloc.add(SendMessageEvent(widget.userId,widget.receiverId, message));
                 widget.controller.clear();
               }
             },

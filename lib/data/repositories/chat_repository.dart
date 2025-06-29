@@ -36,7 +36,7 @@ return _chatProvider.fetchChatRooms(userId);
       senderId: senderId,
       receiverId: receiverId,
       content: messageContent,
-      timestamp: DateTime.now(),
+      timestamp: null,
     );
 
     await _chatProvider.sendMessage(chatRoomId, message);

@@ -195,7 +195,7 @@ print("inside send message bloc");
     );
  await _chatRepository.updateChatRoom(chatRoomId, {
       'lastMessage': event.message,
-      'lastMessageTimestamp': event.timestamp,
+      'lastMessageTimestamp': FieldValue.serverTimestamp(),
       'lastMessageSender': event.senderId,
       'unreadCount': FieldValue.increment(1),
     });
